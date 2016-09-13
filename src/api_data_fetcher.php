@@ -31,7 +31,7 @@ class ApiDataFetcher{
 	/**
 	 * $adf = new ApiDataFetcher("https://service.activa.cz/api/");
 	 */
-	function ApiDataFetcher($url_or_options = null,$options = array()){
+	function __construct($url_or_options = null,$options = array()){
 		global $ATK14_GLOBAL;
 
 		if(is_array($url_or_options)){
