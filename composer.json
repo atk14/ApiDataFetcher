@@ -2,7 +2,7 @@
         "name": "atk14/api-data-fetcher",
         "type": "library",
         "description": "Client library for communication with ATK14 restful API",
-        "keywords": ["atk14", "api"],
+        "keywords": ["atk14", "api", "client"],
         "homepage": "https://github.com/atk14/ApiDataFetcher",
         "license": ["MIT"],
         "authors": [
