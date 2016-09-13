@@ -1,50 +1,27 @@
 DpiDataFetcher
 ==============
 
-A client library for communication with a ATK14 restful API
+Client library for communication with ATK14 restful API
 
 Basic usage
 -----------
 
-    
-    $adf = Tracy\Debugger::getBar();
-    $bar->addPanel(new DbMolePanel($dbmole));
+    $adf = new ApiDataFetcher("http://skelet.atk14.net/site/api/");
+    $data = $adf->get("articles/detail",array("id" => 123));
 
-Usage in an ATK14 application (built upon Atk14Skelet)
-------------------------------------------------------
+    $title = $data["title"];
+
+Installation
+------------
 
 Use the Composer to install the panel.
 
     cd path/to/your/atk14/project/
-    composer.phar require atk14/dbmole-panel dev-master
+    composer require atk14/api-data-fetcher dev-master
 
-Load autoloader from the Composer and enable the Tracy Debugger.
+In the project configuration file the constant API_DATA_FETCHER_BASE_URL can be defined.
 
-    // file: lib/load.php
-    require(__DIR__."/../vendor/autoload.php");
-
-    if(
-      !TEST &&
-      !$HTTP_REQUEST->xhr() &&
-      php_sapi_name()!="cli" // we do not want Tracy in cli
-    ){
-      Tracy\Debugger::enable(PRODUCTION, __DIR__ . '/../log/');
-    }
-
-Enable collecting of the DbMole statistics in DEVELOPMENT.
-
-    // file: config/settings.php
-    define("DBMOLE_COLLECT_STATICTICS",DEVELOPMENT);
-
-Add the DbMole panel to the Tracy in \_application_after_filter().
-
-    // file: app/controllers/application_base.php
-    function _application_after_filter(){
-      if(DBMOLE_COLLECT_STATICTICS){
-        $bar = Tracy\Debugger::getBar();
-        $bar->addPanel(new DbMolePanel($this->dbmole));
-      }
-    }
+    define("API_DATA_FETCHER_BASE_URL","http://skelet.atk14.net/site/api/");
 
 Licence
 -------
