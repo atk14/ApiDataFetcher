@@ -3,7 +3,7 @@
  * Zakladni cast URL datoveho API
  */
 if(!defined("API_DATA_FETCHER_BASE_URL")) {
-define("API_DATA_FETCHER_BASE_URL","https://ssl.ihned.cz/site/api/");
+	define("API_DATA_FETCHER_BASE_URL","http://skelet.atk14.net/site/api/");
 }
 
 /**
@@ -31,7 +31,7 @@ class ApiDataFetcher{
 	/**
 	 * $adf = new ApiDataFetcher("https://service.activa.cz/api/");
 	 */
-	function __construct($url_or_options = null,$options = array()){
+	function ApiDataFetcher($url_or_options = null,$options = array()){
 		global $ATK14_GLOBAL;
 
 		if(is_array($url_or_options)){
@@ -71,25 +71,48 @@ class ApiDataFetcher{
 	function getErrors(){ return $this->errors; }
 
 	/**
-	 * $api_data_fetcher->get("articles/detail",array("id" => 123));
+	 *	$api_data_fetcher->get("articles/detail",array("id" => 123));
 	 *
-	 * $api_data_fetcher->get("articles/index",array("offset" => 10));
-	 * $api_data_fetcher->get("articles",array("offset" => 10)); // stejne jako "articles/index"
+	 *	$api_data_fetcher->get("articles/index",array("offset" => 10));
+	 *	$api_data_fetcher->get("articles",array("offset" => 10)); // stejne jako "articles/index"
 	 *
-	 * $api_data_fetcher->get("articles/index",array("offset" => 10),array("cache" => 60));
+	 *	$api_data_fetcher->get("articles/index",array("offset" => 10),array("cache" => 60));
 	 */
 	function get($action,$params = array(),$options = array()){
 		$options["method"] = "GET";
 		return $this->_doRequest($action,$params,$options);
 	}
 
+	/**
+	 *	$api_data_fetcher->post("articles/create_new",array(
+	 *		"title" => "Very Nice Article"
+	 *	));
+	 */
 	function post($action,$params = array(),$options = array()){
 		$options["method"] = "POST";
 		return $this->_doRequest($action,$params,$options);
 	}
 
 	/**
-	 * $this->_doRequest("products/detail",array("catalog_id" => "1234/3345566"));
+	 *	$api_data_fetcher->postFile("images/create_new","/path/to/file.jpg");
+	 *	$api_data_fetcher->postFile("images/create_new","/path/to/file.jpg",array("title" => "Image of Earth", "description" => "..."));
+	 */
+	function postFile($action,$file,$params = array(),$options = array()){
+		$options += array(
+			"name" => null,
+			"postname" => "file",
+			"mime" => "application/octet-stream",
+		);
+
+		if(!$options["name"]){
+			$options["name"] = preg_replace('/^.*\//','',$file,$matches); // "/params/to/image.jpg" -> "image.jpg"
+		}
+
+		// TODO: finish it!
+	}
+
+	/**
+	 *	$this->_doRequest("products/detail",array("catalog_id" => "1234/3345566"));
 	 */
 	function _doRequest($action,$params,$options){
 		$params += array(
