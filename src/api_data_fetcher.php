@@ -173,7 +173,7 @@ class ApiDataFetcher{
 			$u->post($content,array(
 				"content_type" => $options["file"]["mime_type"],
 				"additional_headers" => array(
-					sprintf('Content-Disposition: attachment; filename="%s"',$options["file"]["name"]) // TODO: sanitize filename
+					sprintf('Content-Disposition: attachment; filename="%s"',rawurlencode($options["file"]["name"]))
 				)
 			));
 
