@@ -105,7 +105,7 @@ class ApiDataFetcher{
 		);
 
 		if(!$options["name"]){
-			$options["name"] = preg_replace('/^.*\//','',$file,$matches); // "/params/to/image.jpg" -> "image.jpg"
+			$options["name"] = preg_replace('/^.*\//','',$file); // "/params/to/image.jpg" -> "image.jpg"
 		}
 
 		if(is_null($options["mime_type"])){
@@ -169,9 +169,13 @@ class ApiDataFetcher{
 		));
 
 		if($options["file"]){
-			$u->postFile(Files::GetFileContent(Files::GetFileContent($options["file"],array(
+			$content = Files::GetFileContent($options["file"]["name"]);
+			$u->post($content,array(
 				"content_type" => $options["file"]["mime_type"],
-			))));
+				"additional_headers" => array(
+					sprintf('Content-Disposition: attachment; filename="%s"',$options["file"]["name"]) // TODO: sanitize filename
+				)
+			));
 
 		}elseif($options["method"]=="POST"){
 			// Content-Type: application/x-www-form-urlencoded
