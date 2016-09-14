@@ -6,7 +6,7 @@ Client library for communication with ATK14 restful API
 Basic usage
 -----------
 
-    $adf = new ApiDataFetcher("http://skelet.atk14.net/site/api/");
+    $adf = new ApiDataFetcher("http://skelet.atk14.net/api/");
     $data = $adf->get("articles/detail",array("id" => 123));
 
     $title = $data["title"];
@@ -21,7 +21,7 @@ Use the Composer to install the panel.
 
 In the project configuration file the constant API_DATA_FETCHER_BASE_URL can be defined.
 
-    define("API_DATA_FETCHER_BASE_URL","http://skelet.atk14.net/site/api/");
+    define("API_DATA_FETCHER_BASE_URL","http://skelet.atk14.net/api/");
 
 Licence
 -------
