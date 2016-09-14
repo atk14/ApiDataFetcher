@@ -101,13 +101,28 @@ class ApiDataFetcher{
 		$options += array(
 			"name" => null,
 			"postname" => "file",
-			"mime" => "application/octet-stream",
+			"mime_type" => null, // "application/octet-stream"
 		);
 
 		if(!$options["name"]){
 			$options["name"] = preg_replace('/^.*\//','',$file,$matches); // "/params/to/image.jpg" -> "image.jpg"
 		}
 
+		if(is_null($options["mime_type"])){
+			$options["mime_type"] = Files::DetermineFileType($file);
+		}
+
+		return $this->_doRequest($action,$params,array(
+			"method" => "POST",
+			"file" => $options,
+		));
+
+		$url = "$this->base_url$this->lang/$action/?".$this->_joinParams($params);
+
+		$uf = new UrlFetcher($url,array(
+		));
+		$uf->post(Files::GetFileContent($file),array("content_type" => $options["mime_type"]));
+		
 		// TODO: finish it!
 	}
 
@@ -122,6 +137,7 @@ class ApiDataFetcher{
 		$options += array(
 			"cache" => 0,
 			"acceptable_error_codes" => array(),
+			"file" => array(),
 		);
 
 		$this->errors = array();
@@ -131,7 +147,7 @@ class ApiDataFetcher{
 		$timer->start();
 
 		$url = "$this->base_url$this->lang/$action/";
-		if($options["method"]!="POST"){
+		if($options["method"]!="POST" || $options["file"]){
 			$url .= "?".$this->_joinParams($params);
 		}
 		$this->url = $url;
@@ -145,11 +161,19 @@ class ApiDataFetcher{
 
 		// Pro stahovani dat se pouziva UrlFetcher - soucast ATK14
 		$headers = $this->additional_headers;
+		//if($options["file"]){
+		//	$headers["X-FileName"] = $options["name"];
+		//}
 		$u = new UrlFetcher($url,array(
 			"additional_headers" => $headers
 		));
 
-		if($options["method"]=="POST"){
+		if($options["file"]){
+			$u->postFile(Files::GetFileContent(Files::GetFileContent($options["file"],array(
+				"content_type" => $options["file"]["mime_type"],
+			))));
+
+		}elseif($options["method"]=="POST"){
 			// Content-Type: application/x-www-form-urlencoded
 			// Content-Length: 244
 
@@ -231,7 +255,7 @@ invalid json:\n".$u->getContent()
 		return $this->status_code;
 	}
 
-	protected function _joinParams($params){
+	function _joinParams($params){
 		$out = array();
 		foreach($params as $key => $value){
 			if(is_object($value)){ $value = $value->getId(); }
