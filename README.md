@@ -1,4 +1,4 @@
-DpiDataFetcher
+ApiDataFetcher
 ==============
 
 Client library for communication with ATK14 restful API
@@ -26,4 +26,4 @@ In the project configuration file the constant API_DATA_FETCHER_BASE_URL can be 
 Licence
 -------
 
-DbMolePanel is free software distributed [under the terms of the MIT license](http://www.opensource.org/licenses/mit-license)
+ApiDataFetcher is free software distributed [under the terms of the MIT license](http://www.opensource.org/licenses/mit-license)
