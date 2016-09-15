@@ -266,7 +266,7 @@ invalid json:\n".$u->getContent()
 		return $this->status_code;
 	}
 
-	function _joinParams($params){
+	protected function _joinParams($params){
 		$out = array();
 		foreach($params as $key => $value){
 			if(is_object($value)){ $value = $value->getId(); }
