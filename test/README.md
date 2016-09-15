@@ -11,3 +11,5 @@ The ApiDataFetcher needs to be installed into the Atk14Skelet installation.
     composer require atk14/api-data-fetcher dev-master
     cd vendor/atk14/api-data-fetcher/test/
     run_unit_tests
+
+For file upload testing you need to have PupiqSrv (i.e. http://i.pupiq.net/) installed on you local system. This software is not open source yet :(

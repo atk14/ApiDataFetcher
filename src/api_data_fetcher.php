@@ -94,36 +94,42 @@ class ApiDataFetcher{
 	}
 
 	/**
+	 * Sends a single file into the specific action
+	 *
 	 *	$api_data_fetcher->postFile("images/create_new","/path/to/file.jpg");
+	 *
+	 *	$api_data_fetcher->postFile(
+	 *		"images/create_new",																																					// action name
+	 *		array("path" => "/path/to/file.jpg", "name" => "earth.jpg", "mime_type" => "image/jpeg"),	// file definition
+	 *		array("title" => "Image of Earth", "description" => "...")																		// other parameters
+	 *	);
+	 *
 	 *	$api_data_fetcher->postFile("images/create_new","/path/to/file.jpg",array("title" => "Image of Earth", "description" => "..."));
 	 */
 	function postFile($action,$file,$params = array(),$options = array()){
-		$options += array(
-			"name" => null,
-			"postname" => "file",
-			"mime_type" => null, // "application/octet-stream"
+		if(is_string($file)){
+			$file = array("path" => $file);
+		}
+
+		$file += array(
+			"path" => "", // "/path/to/file/photo.jpg"
+			"postname" => null, // "image"
+			"name" => null, // "photo.jpg"
+			"mime_type" => null, // "image/jpeg"
 		);
 
-		if(!$options["name"]){
-			$options["name"] = preg_replace('/^.*\//','',$file); // "/params/to/image.jpg" -> "image.jpg"
+		if(!$file["name"]){
+			$file["name"] = preg_replace('/^.*\//','',$file["path"]); // "/params/to/image.jpg" -> "image.jpg"
 		}
 
-		if(is_null($options["mime_type"])){
-			$options["mime_type"] = Files::DetermineFileType($file);
+		if(is_null($file["mime_type"])){
+			$file["mime_type"] = Files::DetermineFileType($file["path"]);
 		}
 
-		return $this->_doRequest($action,$params,array(
-			"method" => "POST",
-			"file" => $options,
-		));
+		$options["method"] = "POST";
+		$options["file"] = $file;
 
-		$url = "$this->base_url$this->lang/$action/?".$this->_joinParams($params);
-
-		$uf = new UrlFetcher($url,array(
-		));
-		$uf->post(Files::GetFileContent($file),array("content_type" => $options["mime_type"]));
-		
-		// TODO: finish it!
+		return $this->_doRequest($action,$params,$options);
 	}
 
 	/**
@@ -137,7 +143,7 @@ class ApiDataFetcher{
 		$options += array(
 			"cache" => 0,
 			"acceptable_error_codes" => array(),
-			"file" => array(),
+			"file" => array(), // see postFile()
 		);
 
 		$this->errors = array();
@@ -169,10 +175,11 @@ class ApiDataFetcher{
 		));
 
 		if($options["file"]){
-			$content = Files::GetFileContent($options["file"]["name"]);
+			$content = Files::GetFileContent($options["file"]["path"]);
 			$u->post($content,array(
 				"content_type" => $options["file"]["mime_type"],
 				"additional_headers" => array(
+					sprintf('Content-Type: %s',$options["file"]["mime_type"]),
 					sprintf('Content-Disposition: attachment; filename="%s"',rawurlencode($options["file"]["name"]))
 				)
 			));

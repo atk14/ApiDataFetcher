@@ -1,13 +1,26 @@
 <?php
 class TcFileUpload extends TcBase {
-	function test(){
 
+	function test(){
 		$adf = new ApiDataFetcher("http://pupiq_srv.localhost/api/");
-		$data = $adf->postFile("attachments/create_new",__DIR__ . "/sandokan.jpg",array(
+		$data = $adf->postFile("attachments/create_new","sandokan.jpg",array(
 			"auth_token" => $this->_getAuthToken(),
 		));
 
-		var_dump($data); exit;
+		$this->assertEquals(201,$adf->getStatusCode());
+		$this->assertEquals("sandokan.jpg",$data["filename"]);
+
+		$adf = new ApiDataFetcher("http://pupiq_srv.localhost/api/");
+		$data = $adf->postFile("attachments/create_new",array(
+			"path" => __DIR__ . "/sandokan.jpg",
+			"name" => "česýlko.jpg",
+		),
+		array(
+			"auth_token" => $this->_getAuthToken(),
+		));
+
+		$this->assertEquals(201,$adf->getStatusCode());
+		$this->assertEquals("cesylko.jpg",$data["filename"]);
 	}
 
 	function _getAuthToken(){
