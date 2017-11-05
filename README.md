@@ -14,7 +14,7 @@ Basic usage
 Installation
 ------------
 
-Use the Composer to install the panel.
+Use the Composer to install the ApiDataFetcher.
 
     cd path/to/your/atk14/project/
     composer require atk14/api-data-fetcher dev-master
