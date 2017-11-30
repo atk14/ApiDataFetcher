@@ -318,7 +318,7 @@ invalid json:\n".$u->getContent()
 		$out[] = "<pre>";
 		foreach($stats as $el){
 			$out[] = $this->_formatSeconds($el["duration"])."s";
-			$out[] = "$el[method] $el[url]";
+			$out[] = "$el[method] <a href='$el[url]'>$el[url]</a>";
 			foreach($el["params"] as &$_p){
 				$_p = is_object($_p) ? "$_p" : $_p; // prevod zejmena $api_session na string
 			}
