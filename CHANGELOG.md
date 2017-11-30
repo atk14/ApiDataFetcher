@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Fix when response contains only string with zeros
 
-## [1.0] - 2016-09-15
+[1.0] - 2016-09-15
+------------------
 
 - First version of the ApiDataFetcher
