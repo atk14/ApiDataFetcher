@@ -214,7 +214,7 @@ class ApiDataFetcher{
 
 		$d = json_decode($u->getContent(),true);
 		if(is_null($d)){
-			error_log("ApiDataFetcher:
+			trigger_error("ApiDataFetcher:
 URL: $url
 response code: ".$u->getStatusCode()."
 invalid json:\n".$u->getContent()
