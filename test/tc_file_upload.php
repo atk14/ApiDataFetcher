@@ -2,9 +2,11 @@
 class TcFileUpload extends TcBase {
 
 	function test(){
-		$adf = new ApiDataFetcher("http://pupiq_srv.localhost/api/");
+		$adf = new ApiDataFetcher("http://pupiq_srv.localhost/api/",array(
+			"logger" => new Logger()
+		));
 		$data = $adf->postFile("attachments/create_new","sandokan.jpg",array(
-			"auth_token" => $this->_getAuthToken(),
+			"auth_token" => $this->_getAuthToken()
 		));
 
 		$this->assertEquals(201,$adf->getStatusCode());

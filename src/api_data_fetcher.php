@@ -32,8 +32,6 @@ class ApiDataFetcher{
 	 * $adf = new ApiDataFetcher("https://service.activa.cz/api/");
 	 */
 	function __construct($url_or_options = null,$options = array()){
-		global $ATK14_GLOBAL;
-
 		if(is_array($url_or_options)){
 			$options = $url_or_options;
 			$url_or_options = null;
@@ -42,14 +40,22 @@ class ApiDataFetcher{
 		$url = $url_or_options ? $url_or_options : API_DATA_FETCHER_BASE_URL;
 
 		$options += array(
-			"logger" => $ATK14_GLOBAL->getLogger(),
+			"logger" => null,
 			"request" => $GLOBALS["HTTP_REQUEST"],
 			"response" => $GLOBALS["HTTP_RESPONSE"],
-			"lang" => $ATK14_GLOBAL->getLang(),
+			"lang" => "", // "en", "cs"...
 			"url" => $url,
 			"cache_storage" => new CacheFileStorage(),
 			"additional_headers" => array(), // array("X-Forwarded-For: 127.0.0.1","X-Logged-User-Id: 123")
 		);
+
+		if(is_null($options["logger"])){
+			$options["logger"] = isset($GLOBALS["ATK14_GLOBAL"]) ? $GLOBALS["ATK14_GLOBAL"]->getLogger() : null;
+		}
+
+		if(!$options["lang"]){
+			$options["lang"] = isset($GLOBALS["ATK14_GLOBAL"]) ? $GLOBALS["ATK14_GLOBAL"]->getLang() : "en";
+		}
 
 		// "X-Forwarded-For: office.snapps.eu" -> array("X-Forwarded-For: office.snapps.eu")
 		if(!is_array($options["additional_headers"])){

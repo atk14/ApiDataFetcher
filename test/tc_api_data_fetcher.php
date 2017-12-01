@@ -2,7 +2,9 @@
 class TcApiDataFetcher extends TcBase {
 
 	function test(){
-		$apf = new ApiDataFetcher("http://atk14skelet.localhost/api/");
+		$apf = new ApiDataFetcher("http://atk14skelet.localhost/api/",array(
+			"logger" => new Logger()
+		));
 
 		// ### login_availabilities/
 
