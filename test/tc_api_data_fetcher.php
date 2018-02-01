@@ -66,4 +66,36 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertInternalType("array",$data);
 		$this->assertEquals($login,$data["login"]);
 	}
+
+	function test_lang(){
+		$apf = new ApiDataFetcher("http://skelet.atk14.net/api/",array(
+			"logger" => new Logger(),
+			"lang" => "en",
+		));
+
+		$data = $apf->get("login_availabilities/detail",array("login" => "yuri"));
+		$this->assertEquals(array("status" => "available"),$data);
+		$this->assertEquals("http://skelet.atk14.net/api/en/login_availabilities/detail/?login=yuri&format=json",$apf->getUrl());
+
+		$data = $apf->get("login_availabilities/detail",array("login" => "yuri", "lang" => "cs"));
+		$this->assertEquals(array("status" => "available"),$data);
+		$this->assertEquals("http://skelet.atk14.net/api/cs/login_availabilities/detail/?login=yuri&format=json",$apf->getUrl());
+
+		// invalid login in the default language (en)
+		$data = $apf->post("logins/create_new",array(
+			"login" => "yuri",
+			"password" => "badass",
+		),array("acceptable_error_codes" => array("404")));
+		$this->assertEquals(null,$data);
+		$this->assertEquals(array("There is no such user"),$apf->getErrors());
+
+		// invalid login in czech
+		$data = $apf->post("logins/create_new",array(
+			"login" => "yuri",
+			"password" => "badass",
+			"lang" => "cs",
+		),array("acceptable_error_codes" => array("404")));
+		$this->assertEquals(null,$data);
+		$this->assertEquals(array("Takový uživatel tady není"),$apf->getErrors());
+	}
 }

@@ -1,18 +1,25 @@
 <?php
 /**
- * Zakladni cast URL datoveho API
+ * Base part of the URL of the data API
  */
 if(!defined("API_DATA_FETCHER_BASE_URL")) {
-	define("API_DATA_FETCHER_BASE_URL","http://skelet.atk14.net/site/api/");
+	define("API_DATA_FETCHER_BASE_URL","http://skelet.atk14.net/api/");
 }
 
 /**
- * Trida zajistuje stahovani a dekodovani dat z datoveho API
+ * ApiDataFetcher provides download and decoding data from an data API
  *
- * $apd = new ApiDataFetcher(array(
- *	"additional_headers" => array("Cookie: ".$request->getHeader("Cookie"))
- * ));
- * $data = $apd->get("articles/detail",array("id" => 123));
+ * <code>
+ *	$apd = new ApiDataFetcher([
+ *		"lang" => "en",
+ *		"additional_headers" => array("Cookie: ".$request->getHeader("Cookie"))
+ *	]);
+ *	$article_data = $apd->get("articles/detail",["id" => 123],["acceptable_error_codes" => [404]]);
+ *	if(!$article_data){
+ *		// article 123 was not found
+ *		print_r($apd->getErrors());
+ *	}
+ * </code>
  */
 class ApiDataFetcher{
 	var $logger;
@@ -29,7 +36,14 @@ class ApiDataFetcher{
 	protected static $QueriesExecuted = array();
 
 	/**
-	 * $adf = new ApiDataFetcher("https://service.activa.cz/api/");
+	 *
+	 * <code>
+	 *	$adf = new ApiDataFetcher();
+	 *	// or
+	 *	$adf = new ApiDataFetcher("https://skelet.atk14.net/api/");
+	 *	// or
+	 *	$adf = new ApiDataFetcher(["additional_headers" => ["X-Forwarded-For: 127.0.0.1"]]);
+	 * </code>
 	 */
 	function __construct($url_or_options = null,$options = array()){
 		if(is_array($url_or_options)){
@@ -43,7 +57,7 @@ class ApiDataFetcher{
 			"logger" => null,
 			"request" => $GLOBALS["HTTP_REQUEST"],
 			"response" => $GLOBALS["HTTP_RESPONSE"],
-			"lang" => "", // "en", "cs"...
+			"lang" => "", // default language; "en", "cs"... 
 			"url" => $url,
 			"cache_storage" => new CacheFileStorage(),
 			"additional_headers" => array(), // array("X-Forwarded-For: 127.0.0.1","X-Logged-User-Id: 123")
@@ -143,7 +157,8 @@ class ApiDataFetcher{
 	 */
 	function _doRequest($action,$params,$options){
 		$params += array(
-			"format" => "json"
+			"format" => "json",
+			"lang" => $this->lang,
 		);
 
 		$options += array(
@@ -158,7 +173,10 @@ class ApiDataFetcher{
 		$timer = new StopWatch();
 		$timer->start();
 
-		$url = "$this->base_url$this->lang/$action/";
+		$lang = $params["lang"];
+		unset($params["lang"]);
+
+		$url = "$this->base_url$lang/$action/";
 		if($options["method"]!="POST" || $options["file"]){
 			$url .= "?".$this->_joinParams($params);
 		}
