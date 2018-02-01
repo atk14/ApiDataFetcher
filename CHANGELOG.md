@@ -3,6 +3,13 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.1] - 2018-02-01
+------------------
+
+### Added
+
+- lang can be changed in a post() or get() call
+
 [1.0.2] - 2017-11-30
 --------------------
 
