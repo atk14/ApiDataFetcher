@@ -44,6 +44,12 @@ class ApiDataFetcher{
 	 *	// or
 	 *	$adf = new ApiDataFetcher(["additional_headers" => ["X-Forwarded-For: 127.0.0.1"]]);
 	 * </code>
+	 *
+	 * There are special cases when the presence of the lang in URL is not desirable (e.g. non-ATK14 APIs).
+	 *
+	 * <code>
+	 *	$adf = new ApiDataFetcher(["lang" => ""]);
+	 * </code>
 	 */
 	function __construct($url_or_options = null,$options = array()){
 		if(is_array($url_or_options)){
@@ -57,7 +63,7 @@ class ApiDataFetcher{
 			"logger" => null,
 			"request" => $GLOBALS["HTTP_REQUEST"],
 			"response" => $GLOBALS["HTTP_RESPONSE"],
-			"lang" => "", // default language; "en", "cs"... 
+			"lang" => null, // default language; "en", "cs", ""
 			"url" => $url,
 			"cache_storage" => new CacheFileStorage(),
 			"additional_headers" => array(), // array("X-Forwarded-For: 127.0.0.1","X-Logged-User-Id: 123")
@@ -67,7 +73,7 @@ class ApiDataFetcher{
 			$options["logger"] = isset($GLOBALS["ATK14_GLOBAL"]) ? $GLOBALS["ATK14_GLOBAL"]->getLogger() : null;
 		}
 
-		if(!$options["lang"]){
+		if(is_null($options["lang"])){
 			$options["lang"] = isset($GLOBALS["ATK14_GLOBAL"]) ? $GLOBALS["ATK14_GLOBAL"]->getLang() : "en";
 		}
 
@@ -176,7 +182,11 @@ class ApiDataFetcher{
 		$lang = $params["lang"];
 		unset($params["lang"]);
 
-		$url = "$this->base_url$lang/$action/";
+		$url = $this->base_url;
+		if($lang){
+			$url .= "$lang/";
+		}
+		$url .= "$action/";
 		if($options["method"]!="POST" || $options["file"]){
 			$url .= "?".$this->_joinParams($params);
 		}
@@ -298,7 +308,6 @@ invalid json:\n".$u->getContent()
 		}
 		return join("&",$out);
 	}
-
 
 	function _writeCache($url,$status_code,$data,$errors){
 		$value = array(

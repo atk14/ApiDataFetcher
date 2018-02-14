@@ -97,5 +97,14 @@ class TcApiDataFetcher extends TcBase {
 		),array("acceptable_error_codes" => array("404")));
 		$this->assertEquals(null,$data);
 		$this->assertEquals(array("Takový uživatel tady není"),$apf->getErrors());
+
+		// suppressing lang
+		$apf = new ApiDataFetcher("http://skelet.atk14.net/api/",array(
+			"logger" => new Logger(),
+			"lang" => "",
+		));
+
+		$data = $apf->get("non_existing_resource/detail",array("id" => "123"),array("acceptable_error_codes" => [404]));
+		$this->assertEquals("http://skelet.atk14.net/api/non_existing_resource/detail/?id=123&format=json",$apf->getUrl());
 	}
 }
