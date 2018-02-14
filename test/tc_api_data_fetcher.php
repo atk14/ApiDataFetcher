@@ -104,7 +104,7 @@ class TcApiDataFetcher extends TcBase {
 			"lang" => "",
 		));
 
-		$data = $apf->get("non_existing_resource/detail",array("id" => "123"),array("acceptable_error_codes" => [404]));
+		$data = $apf->get("non_existing_resource/detail",array("id" => "123"),array("acceptable_error_codes" => array(404)));
 		$this->assertEquals("http://skelet.atk14.net/api/non_existing_resource/detail/?id=123&format=json",$apf->getUrl());
 	}
 }
