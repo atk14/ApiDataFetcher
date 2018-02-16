@@ -2,7 +2,7 @@ ApiDataFetcher
 ==============
 
 Client library designed for communication with ATK14 restful API.
-It also should be usable for other JSON APIs.
+It should be usable also for other JSON APIs.
 
 Basic usage
 -----------
@@ -12,7 +12,7 @@ Basic usage
 
     $title = $data["title"];
 
-In fact in this example a HTTP GET request is made on URL http://skelet.atk14.net/api/en/articles/detail/?id=123&format=json and decoded JSON data are returned.
+In fact in this example a HTTP GET request is made on URL http://skelet.atk14.net/api/en/articles/detail/?id=123&format=json and decoded JSON data is returned.
 
 A post request can be made this way:
 
@@ -69,7 +69,7 @@ Installation
 Use the Composer to install the ApiDataFetcher.
 
     cd path/to/your/atk14/project/
-    composer require atk14/api-data-fetcher dev-master
+    composer require atk14/api-data-fetcher
 
 In the project configuration file the constant API_DATA_FETCHER_BASE_URL can be defined.
 
