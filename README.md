@@ -1,15 +1,67 @@
 ApiDataFetcher
 ==============
 
-Client library for communication with ATK14 restful API
+Client library designed for communication with ATK14 restful API.
+It also should be usable for other JSON APIs.
 
 Basic usage
 -----------
 
     $adf = new ApiDataFetcher("http://skelet.atk14.net/api/");
-    $data = $adf->get("articles/detail",array("id" => 123));
+    $data = $adf->get("articles/detail",["id" => 123]);
 
     $title = $data["title"];
+
+In fact in this example a HTTP GET request is made on URL http://skelet.atk14.net/api/en/articles/detail/?id=123&format=json and decoded JSON data are returned.
+
+A post request can be made this way:
+
+    $data = $adf->post("logins/create_new",[
+      "login" => "johny.long",
+      "password" => "JulieIsNoMore"
+    ]);
+
+### Handling error codes
+
+By default ApiDataFetcher throws an exception in case of a non 2XX response code.
+In order to handle valid error codes on an API method, specify the codes in the option acceptable_error_codes.
+
+    $data = $adf->post("logins/create_new",[
+      "login" => "johny.long",
+      "password" => "JulieIsNoMore"
+    ],[
+      "acceptable_error_codes" => [
+        401, // Unauthorized: Bad password
+        404, // Not Found: There is no such user
+      ]
+    ]);
+ 
+    if(!$data){
+      if($adf->getStatusCode()==401){
+         // Bad password
+      }
+      if($adf->getStatusCode()==404){
+         // There is no such user
+      }
+    }
+
+### Language
+
+ApiDataFetcher tries to detect automatically currently used language in the running application and use it in the API method call.
+
+Language can be also specified in the constructor or in the specific API method call.
+
+    $adf = new ApiDataFetcher("http://skelet.atk14.net/api/",["lang" => "en"]);
+
+    $data_in_english = $adf->get("articles/detail",["id" => 123]); // performs call to http://skelet.atk14.net/api/en/articles/detail/?id=123&format=json
+
+    $data_in_czech = $adf->get("articles/detail",["id" => 123],["lang" => "cs"]); // performs call to http://skelet.atk14.net/api/cs/articles/detail/?id=123&format=json
+
+On a non-ATK14 API you may want to disable language considering at all.
+
+    $adf = new ApiDataFetcher("http://somewhere-on-the.net/json-api/",["lang" => ""]);
+
+    $data = $adf->get("articles",["id" => 123]);
 
 Installation
 ------------
