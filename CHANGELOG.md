@@ -3,6 +3,15 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.3] - 2018-02-16
+------------------
+
+### Added
+- Added methods ApiDataFetcher::getMethod() and  ApiDataFetcher::getDuration()
+
+### Fixed
+- ApiDataFetcher can operate without a logger
+
 [1.2.1] - 2018-02-14
 --------------------
 
