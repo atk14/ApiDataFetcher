@@ -15,8 +15,8 @@ class TcApiDataFetcher extends TcBase {
 		));
 		$this->assertEquals(200,$adf->getStatusCode());
 		$this->assertEquals(array("status" => "available"),$data);
-		$this->assertEquals("GET",$adf->getLastMethod());
-		$this->assertEquals("http://www.atk14.net/api/en/login_availabilities/detail/?login=$login&format=json",$adf->getLastUrl());
+		$this->assertEquals("GET",$adf->getMethod());
+		$this->assertEquals("http://www.atk14.net/api/en/login_availabilities/detail/?login=$login&format=json",$adf->getUrl());
 
 		// ### users/create_new
 
@@ -28,8 +28,8 @@ class TcApiDataFetcher extends TcBase {
 		));
 
 		$this->assertEquals(201,$adf->getStatusCode());
-		$this->assertEquals("POST",$adf->getLastMethod());
-		$this->assertEquals("http://www.atk14.net/api/en/users/create_new/",$adf->getLastUrl());
+		$this->assertEquals("POST",$adf->getMethod());
+		$this->assertEquals("http://www.atk14.net/api/en/users/create_new/",$adf->getUrl());
 
 		// ### login_availabilities
 
@@ -79,11 +79,11 @@ class TcApiDataFetcher extends TcBase {
 
 		$data = $adf->get("login_availabilities/detail",array("login" => "yuri"));
 		$this->assertEquals(array("status" => "available"),$data);
-		$this->assertEquals("http://skelet.atk14.net/api/en/login_availabilities/detail/?login=yuri&format=json",$adf->getLastUrl());
+		$this->assertEquals("http://skelet.atk14.net/api/en/login_availabilities/detail/?login=yuri&format=json",$adf->getUrl());
 
 		$data = $adf->get("login_availabilities/detail",array("login" => "yuri", "lang" => "cs"));
 		$this->assertEquals(array("status" => "available"),$data);
-		$this->assertEquals("http://skelet.atk14.net/api/cs/login_availabilities/detail/?login=yuri&format=json",$adf->getLastUrl());
+		$this->assertEquals("http://skelet.atk14.net/api/cs/login_availabilities/detail/?login=yuri&format=json",$adf->getUrl());
 
 		// invalid login in the default language (en)
 		$data = $adf->post("logins/create_new",array(
@@ -109,6 +109,6 @@ class TcApiDataFetcher extends TcBase {
 		));
 
 		$data = $adf->get("non_existing_resource/detail",array("id" => "123"),array("acceptable_error_codes" => array(404)));
-		$this->assertEquals("http://skelet.atk14.net/api/non_existing_resource/detail/?id=123&format=json",$adf->getLastUrl());
+		$this->assertEquals("http://skelet.atk14.net/api/non_existing_resource/detail/?id=123&format=json",$adf->getUrl());
 	}
 }

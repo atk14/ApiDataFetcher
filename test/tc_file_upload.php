@@ -11,8 +11,8 @@ class TcFileUpload extends TcBase {
 		$data = $adf->postFile("file_uploads/create_new","sandokan.jpg");
 
 		$this->assertEquals(201,$adf->getStatusCode());
-		$this->assertEquals("POST",$adf->getLastMethod());
-		$this->assertEquals("http://www.atk14.net/api/en/file_uploads/create_new/?format=json",$adf->getLastUrl());
+		$this->assertEquals("POST",$adf->getMethod());
+		$this->assertEquals("http://www.atk14.net/api/en/file_uploads/create_new/?format=json",$adf->getUrl());
 		$this->assertEquals("sandokan.jpg",$data["filename"]);
 		$this->assertEquals("image/jpeg",$data["mime_type"]);
 		$this->assertEquals("d5d4599e3586064e0524d18e8ee8bce5",$data["md5sum"]);

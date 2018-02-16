@@ -30,7 +30,7 @@ class ApiDataFetcher{
 
 	var $errors;
 	var $url;
-	var $last_method;
+	var $method;
 	var $status_code;
 	var $additional_headers;
 
@@ -192,7 +192,7 @@ class ApiDataFetcher{
 			$url .= "?".$this->_joinParams($params);
 		}
 		$this->url = $url;
-		$this->last_method = $options["method"];
+		$this->method = $options["method"];
 
 		if($options["cache"]>0 && ($ar = $this->_readCache($url,$options["cache"]))){
 			$this->data = $ar["data"];
@@ -289,30 +289,23 @@ invalid json:\n".$u->getContent()
 	}
 
 	/**
-	 * Returns last URL
+	 * Returns last requested URL
 	 */
-	function getLastUrl(){
+	function getUrl(){
 		return $this->url;
 	}
 
 	/**
-	 * Legacy alias for getLastUrl()
-	 */
-	function getUrl(){
-		return $this->getLastUrl();
-	}
-
-	/**
-	 * Returns last HTTP method
+	 * Returns last used HTTP method
 	 *
-	 *	echo $adf->getLastMethod(); // e.g. "POST"
+	 *	echo $adf->getMethod(); // e.g. "POST", "GET"
 	 */
-	function getLastMethod(){
-		return $this->last_method;
+	function getMethod(){
+		return $this->method;
 	}
 
 	/**
-	 * Vrati status code posledniho pozadavku
+	 * Returns HTTP status code of the last request
 	 */
 	function getStatusCode(){
 		return $this->status_code;
