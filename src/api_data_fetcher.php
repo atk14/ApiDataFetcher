@@ -29,10 +29,12 @@ class ApiDataFetcher{
 	var $base_url;
 
 	var $errors;
-	var $url;
-	var $method;
 	var $status_code;
 	var $additional_headers;
+
+	var $url;
+	var $method;
+	var $duration;
 
 	protected static $QueriesExecuted = array();
 
@@ -193,6 +195,7 @@ class ApiDataFetcher{
 		}
 		$this->url = $url;
 		$this->method = $options["method"];
+		$this->duration = null;
 
 		if($options["cache"]>0 && ($ar = $this->_readCache($url,$options["cache"]))){
 			$this->data = $ar["data"];
@@ -231,6 +234,8 @@ class ApiDataFetcher{
 		$this->status_code = $u->getStatusCode();
 
 		$timer->stop();
+
+		$this->duration = $timer->getResult();
 
 		ApiDataFetcher::$QueriesExecuted[] = array(
 			"method" => $options["method"],
@@ -302,6 +307,15 @@ invalid json:\n".$u->getContent()
 	 */
 	function getMethod(){
 		return $this->method;
+	}
+
+	/**
+	 * Returns duration in seconds of the last request
+	 *
+	 *	echo $adf->getDuration(); // e.g. 1.234
+	 */
+	function getDuration(){
+		return $this->duration;
 	}
 
 	/**

@@ -17,6 +17,9 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals(array("status" => "available"),$data);
 		$this->assertEquals("GET",$adf->getMethod());
 		$this->assertEquals("http://www.atk14.net/api/en/login_availabilities/detail/?login=$login&format=json",$adf->getUrl());
+		$duration = $adf->getDuration();
+		$this->assertTrue(is_float($duration));
+		$this->assertTrue($duration>0.0);
 
 		// ### users/create_new
 
