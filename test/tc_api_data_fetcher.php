@@ -10,11 +10,13 @@ class TcApiDataFetcher extends TcBase {
 
 		// ### login_availabilities
 
-		$data = $apf->post("login_availabilities/detail",array(
+		$data = $apf->get("login_availabilities/detail",array(
 			"login" => $login,
 		));
 		$this->assertEquals(200,$apf->getStatusCode());
 		$this->assertEquals(array("status" => "available"),$data);
+		$this->assertEquals("GET",$apf->getLastMethod());
+		$this->assertEquals("http://www.atk14.net/api/en/login_availabilities/detail/?login=$login&format=json",$apf->getLastUrl());
 
 		// ### users/create_new
 
@@ -26,10 +28,12 @@ class TcApiDataFetcher extends TcBase {
 		));
 
 		$this->assertEquals(201,$apf->getStatusCode());
+		$this->assertEquals("POST",$apf->getLastMethod());
+		$this->assertEquals("http://www.atk14.net/api/en/users/create_new/",$apf->getLastUrl());
 
 		// ### login_availabilities
 
-		$data = $apf->post("login_availabilities/detail",array(
+		$data = $apf->get("login_availabilities/detail",array(
 			"login" => $login,
 		));
 		$this->assertEquals(200,$apf->getStatusCode());
@@ -75,11 +79,11 @@ class TcApiDataFetcher extends TcBase {
 
 		$data = $apf->get("login_availabilities/detail",array("login" => "yuri"));
 		$this->assertEquals(array("status" => "available"),$data);
-		$this->assertEquals("http://skelet.atk14.net/api/en/login_availabilities/detail/?login=yuri&format=json",$apf->getUrl());
+		$this->assertEquals("http://skelet.atk14.net/api/en/login_availabilities/detail/?login=yuri&format=json",$apf->getLastUrl());
 
 		$data = $apf->get("login_availabilities/detail",array("login" => "yuri", "lang" => "cs"));
 		$this->assertEquals(array("status" => "available"),$data);
-		$this->assertEquals("http://skelet.atk14.net/api/cs/login_availabilities/detail/?login=yuri&format=json",$apf->getUrl());
+		$this->assertEquals("http://skelet.atk14.net/api/cs/login_availabilities/detail/?login=yuri&format=json",$apf->getLastUrl());
 
 		// invalid login in the default language (en)
 		$data = $apf->post("logins/create_new",array(
@@ -105,6 +109,6 @@ class TcApiDataFetcher extends TcBase {
 		));
 
 		$data = $apf->get("non_existing_resource/detail",array("id" => "123"),array("acceptable_error_codes" => array(404)));
-		$this->assertEquals("http://skelet.atk14.net/api/non_existing_resource/detail/?id=123&format=json",$apf->getUrl());
+		$this->assertEquals("http://skelet.atk14.net/api/non_existing_resource/detail/?id=123&format=json",$apf->getLastUrl());
 	}
 }
