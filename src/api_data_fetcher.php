@@ -267,16 +267,16 @@ invalid json:\n".$u->getContent()
 		}
 
 		if(!$valid_response && !in_array($this->status_code,$options["acceptable_error_codes"])){
-			$this->logger->info(
+			$this->_loggerLog(
 				"ApiDataFetcher: $options[method] $url (HTTP $this->status_code, $timer)\n".
 				($options["method"] == "POST" ? "params: ".print_r($params,true)."\n" : "").
 				"error: ".join(" | ",$this->errors)."\n".
 				"requested URL: ".$this->request->getUrl()
 			);
-			$this->logger->flush();
+			$this->_loggerFlush();
 			throw new Exception("HTTP status code $this->status_code (".join(" | ",$this->errors)."), url: $url");
 		}else{
-			$this->logger->debug(
+			$this->_loggerDebug(
 				"ApiDataFetcher: $options[method] $url (HTTP $this->status_code, $timer)".
 				($options["method"] == "POST" ? "\nparams: ".print_r($params,true)."\n" : "")
 			);
@@ -329,20 +329,20 @@ invalid json:\n".$u->getContent()
 			"created" => time(),
 		);
 		$this->cache_storage->write($url,$value);
-		$this->logger->debug("writing cache");
+		$this->_loggerDebug("writing cache");
 	}
 
 	function _readCache($url,$max_age){
 		if($ar = $this->cache_storage->read($url)){
 			if($ar["created"]>=time()-$max_age){
-				$this->logger->debug("loaded from cache: $url");
+				$this->_loggerDebug("loaded from cache: $url");
 				return $ar;
 			}else{
-				$this->logger->debug("exists in cache but outdated: $url");
+				$this->_loggerDebug("exists in cache but outdated: $url");
 				return;
 			}
 		}
-		$this->logger->debug("doesn't exist in cache: $url");
+		$this->_loggerDebug("doesn't exist in cache: $url");
 	}
 
 	function getQueriesExecuted(){
@@ -376,5 +376,40 @@ invalid json:\n".$u->getContent()
 
 	function _formatSeconds($sec){
 		return number_format($sec,3,".","");
+	}
+
+	/**
+	 * Logs a message using the logger
+	 *
+	 *	$this->_loggerLog("Some information")
+	 *
+	 */
+	function _loggerLog($message){
+		if($this->logger){
+			$this->logger->info($message);
+		}
+	}
+
+	/**
+	 * Logs a debug message using the logger
+	 * 
+	 *	$this->_loggerLog("Some debug information")
+	 *
+	 */
+	function _loggerDebug($message){
+		if($this->logger){
+			$this->logger->debug($message);
+		}
+	}
+
+	/**
+	 * Flushes out the logger's buffer
+	 *
+	 *	$this->_loggerFlush();
+	 */
+	function _loggerFlush(){
+		if($this->logger){
+			$this->logger->flush();
+		}
 	}
 }

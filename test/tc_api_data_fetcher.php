@@ -111,4 +111,21 @@ class TcApiDataFetcher extends TcBase {
 		$data = $adf->get("non_existing_resource/detail",array("id" => "123"),array("acceptable_error_codes" => array(404)));
 		$this->assertEquals("http://skelet.atk14.net/api/non_existing_resource/detail/?id=123&format=json",$adf->getUrl());
 	}
+
+	function test_logger(){
+ 		// no logger given
+		$adf = new ApiDataFetcher("http://skelet.atk14.net/api/",array("logger" => null));
+		$data = $adf->get("login_availabilities/detail",array("login" => "yuri"));
+		$this->assertEquals(array("status" => "available"),$data);
+	
+		// using TestingLogger (see testing_logger.php)
+		$logger = new TestingLogger();
+		$adf = new ApiDataFetcher("http://skelet.atk14.net/api/",array("logger" => $logger));
+		$this->assertEquals(array(),$logger->messages);
+		$data = $adf->get("login_availabilities/detail",array("login" => "yuri"));
+		$this->assertEquals(array("status" => "available"),$data);
+		//
+		$this->assertEquals(1,sizeof($logger->messages));
+		$this->assertContains('[debug] ApiDataFetcher: GET http://skelet.atk14.net/api/en/login_availabilities/detail/?login=yuri&format=json',$logger->messages[0]);
+	}
 }
