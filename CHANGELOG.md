@@ -3,6 +3,15 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.3.1] - 2018-03-04
+--------------------
+
+### Added
+- ApiDataFetcher::VERSION
+
+### Fixed
+- Added proper User-Agent header
+
 [1.3] - 2018-02-16
 ------------------
 
