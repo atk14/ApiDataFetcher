@@ -213,6 +213,7 @@ class ApiDataFetcher{
 		//	$headers["X-FileName"] = $options["name"];
 		//}
 		$u = new UrlFetcher($url,array(
+			"user_agent" => sprintf("ApiDataFetcher/%s UrlFetcher/%s",self::VERSION,UrlFetcher::VERSION),
 			"additional_headers" => $headers
 		));
 
