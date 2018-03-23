@@ -63,6 +63,13 @@ On a non-ATK14 API you may want to disable language considering at all.
 
     $data = $adf->get("articles",["id" => 123]);
 
+### Tracy panel integration
+
+ApiDataFetcher package comes with ApiDataFetcherPanel for easy integration into the popular debugger Tracy (https://packagist.org/packages/tracy/tracy)
+
+    $tracy_bar = Tracy\Debugger::getBar();
+    $tracy_bar->addPanel(new ApiDataFetcherPanel($api_data_fetcher));
+
 Installation
 ------------
 
