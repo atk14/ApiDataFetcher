@@ -3,6 +3,13 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.4] - 2018-03-23
+------------------
+
+### Added
+- Perfect User-Agent header added
+- Adedd ApiDataFetcherPanel for integration into Tracy
+
 [1.3.1] - 2018-03-04
 --------------------
 
