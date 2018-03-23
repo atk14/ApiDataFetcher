@@ -33,6 +33,7 @@ class ApiDataFetcher{
 
 	var $errors;
 	var $status_code;
+	var $user_agent;
 	var $additional_headers;
 
 	var $url;
@@ -72,6 +73,7 @@ class ApiDataFetcher{
 			"lang" => null, // default language; "en", "cs", ""
 			"url" => $url,
 			"cache_storage" => new CacheFileStorage(),
+			"user_agent" => sprintf("ApiDataFetcher/%s UrlFetcher/%s",self::VERSION,UrlFetcher::VERSION),
 			"additional_headers" => array(), // array("X-Forwarded-For: 127.0.0.1","X-Logged-User-Id: 123")
 		);
 
@@ -94,6 +96,7 @@ class ApiDataFetcher{
 		$this->lang = $options["lang"];
 		$this->base_url = $options["url"];
 		$this->cache_storage = $options["cache_storage"];
+		$this->user_agent = $options["user_agent"];
 		$this->additional_headers = $options["additional_headers"];
 	}
 
@@ -213,7 +216,7 @@ class ApiDataFetcher{
 		//	$headers["X-FileName"] = $options["name"];
 		//}
 		$u = new UrlFetcher($url,array(
-			"user_agent" => sprintf("ApiDataFetcher/%s UrlFetcher/%s",self::VERSION,UrlFetcher::VERSION),
+			"user_agent" => $this->user_agent,
 			"additional_headers" => $headers
 		));
 
