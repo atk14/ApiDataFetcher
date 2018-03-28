@@ -119,6 +119,7 @@ class ApiDataFetcher{
 	}
 
 	/**
+	 *
 	 *	$api_data_fetcher->post("articles/create_new",array(
 	 *		"title" => "Very Nice Article"
 	 *	));
@@ -126,6 +127,36 @@ class ApiDataFetcher{
 	function post($action,$params = array(),$options = array()){
 		$options["method"] = "POST";
 		return $this->_doRequest($action,$params,$options);
+	}
+
+	/**
+	 *
+	 *	$raw_data = json_encode($data);
+	 *	$api_data_fetcher->postRawData("articles/edit",$raw_data,array("id" => 123),array("mime_type" => "application/json"));
+	 */
+	function postRawData($action,$content,$params = array(),$options = array()){
+		$options += array(
+			"mime_type" => "application/data"
+		);
+
+		$options["method"] = "POST";
+		$options["raw_post_data"] = $content;
+
+		return $this->_doRequest($action,$params,$options);
+	}
+
+	/**
+	 *
+	 *	$api_data_fetcher->postJson('path_to_action','{"a":"b","c":"d"}');
+	 */
+	function postJson($action,$json,$params = array(),$options = array()){
+		if(!is_string($json)){
+			$json = json_encode($json);
+		}
+		$options += array(
+			"mime_type" => "application/json",
+		);
+		return $this->postRawData($action,$json,$params,$options);
 	}
 
 	/**
@@ -179,7 +210,8 @@ class ApiDataFetcher{
 		$options += array(
 			"cache" => 0,
 			"acceptable_error_codes" => array(),
-			"file" => array(), // see postFile()
+			"file" => array(), // see postFile(),
+			"raw_post_data" => null,
 		);
 
 		$this->errors = array();
@@ -196,7 +228,7 @@ class ApiDataFetcher{
 			$url .= "$lang/";
 		}
 		$url .= "$action/";
-		if($options["method"]!="POST" || $options["file"]){
+		if($options["method"]!="POST" || $options["file"] || !is_null($options["raw_post_data"])){
 			$url .= "?".$this->_joinParams($params);
 		}
 		$this->url = $url;
@@ -220,7 +252,13 @@ class ApiDataFetcher{
 			"additional_headers" => $headers
 		));
 
-		if($options["file"]){
+		if(!is_null($options["raw_post_data"])){
+			$u->post($options["raw_post_data"],array(
+				"content_type" => $options["mime_type"],
+				"additional_headers" => $options["additional_headers"],
+			));
+
+		}elseif($options["file"]){
 			$content = Files::GetFileContent($options["file"]["path"]);
 			$u->post($content,array(
 				"content_type" => $options["file"]["mime_type"],
