@@ -63,6 +63,12 @@ On a non-ATK14 API you may want to disable language considering at all.
 
     $data = $adf->get("articles",["id" => 123]);
 
+### HTTP Basic Authentication
+
+Does an API require basic authentication? No problem for the ApiDataFetcher!
+
+    $adf = new ApiDataFetcher("https://username:password@api-on-the.net");
+
 ### Tracy panel integration
 
 ApiDataFetcher package comes with ApiDataFetcherPanel for easy integration into the popular debugger Tracy (https://packagist.org/packages/tracy/tracy)
