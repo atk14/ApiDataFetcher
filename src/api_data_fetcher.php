@@ -28,6 +28,7 @@ class ApiDataFetcher{
 	var $logger;
 	var $request;
 	var $response;
+	var $default_params;
 	var $lang;
 	var $base_url;
 
@@ -70,6 +71,9 @@ class ApiDataFetcher{
 			"logger" => null,
 			"request" => $GLOBALS["HTTP_REQUEST"],
 			"response" => $GLOBALS["HTTP_RESPONSE"],
+			"default_params" => array(
+				"format" => "json"
+			),
 			"lang" => null, // default language; "en", "cs", ""
 			"url" => $url,
 			"cache_storage" => new CacheFileStorage(),
@@ -84,6 +88,8 @@ class ApiDataFetcher{
 		if(is_null($options["lang"])){
 			$options["lang"] = isset($GLOBALS["ATK14_GLOBAL"]) ? $GLOBALS["ATK14_GLOBAL"]->getLang() : "en";
 		}
+
+		$this->default_params = (array)$options["default_params"];
 
 		// "X-Forwarded-For: office.snapps.eu" -> array("X-Forwarded-For: office.snapps.eu")
 		if(!is_array($options["additional_headers"])){
@@ -203,9 +209,9 @@ class ApiDataFetcher{
 	 */
 	function _doRequest($action,$params,$options){
 		$params += array(
-			"format" => "json",
 			"lang" => $this->lang,
 		);
+		$params += $this->default_params;
 
 		$options += array(
 			"cache" => 0,
