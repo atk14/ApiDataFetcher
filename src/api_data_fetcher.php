@@ -36,6 +36,7 @@ class ApiDataFetcher{
 	var $status_code;
 	var $user_agent;
 	var $additional_headers;
+	var $automatically_add_trailing_slash;
 
 	var $url;
 	var $method;
@@ -79,6 +80,7 @@ class ApiDataFetcher{
 			"cache_storage" => new CacheFileStorage(),
 			"user_agent" => sprintf("ApiDataFetcher/%s UrlFetcher/%s",self::VERSION,UrlFetcher::VERSION),
 			"additional_headers" => array(), // array("X-Forwarded-For: 127.0.0.1","X-Logged-User-Id: 123")
+			"automatically_add_trailing_slash" => true,
 		);
 
 		if(is_null($options["logger"])){
@@ -104,6 +106,7 @@ class ApiDataFetcher{
 		$this->cache_storage = $options["cache_storage"];
 		$this->user_agent = $options["user_agent"];
 		$this->additional_headers = $options["additional_headers"];
+		$this->automatically_add_trailing_slash = $options["automatically_add_trailing_slash"];
 	}
 
 	/**
@@ -233,7 +236,11 @@ class ApiDataFetcher{
 		if($lang){
 			$url .= "$lang/";
 		}
-		$url .= "$action/";
+		$url .= "$action";
+		if($this->automatically_add_trailing_slash && !preg_match('/\/$/',$url) && !preg_match('/\?/',$url)){
+			$url .= "/";
+		}
+
 		if($options["method"]!="POST" || $options["file"] || !is_null($options["raw_post_data"])){
 			$url = $this->_addParamsToUrl($url,$params);
 		}

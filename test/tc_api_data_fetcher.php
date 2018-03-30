@@ -113,6 +113,23 @@ class TcApiDataFetcher extends TcBase {
 
 		$data = $adf->get("non_existing_resource/detail",array("id" => "123"),array("acceptable_error_codes" => array(404)));
 		$this->assertEquals("http://skelet.atk14.net/api/non_existing_resource/detail/?id=123&format=json",$adf->getUrl());
+
+		// parameters in action
+		$adf = new ApiDataFetcher("http://www.atk14.net/api/",array(
+			"logger" => new Logger(),
+		));
+
+		$data = $adf->get("http_requests/detail/?p1=a");
+		$this->assertEquals("/api/en/http_requests/detail/?p1=a&format=json",$data["uri"]);
+
+		$data = $adf->get("http_requests/detail/?format=json");
+		$this->assertEquals("/api/en/http_requests/detail/?format=json",$data["uri"]);
+
+		$data = $adf->get("http_requests/detail/?format=json&p1=a");
+		$this->assertEquals("/api/en/http_requests/detail/?format=json&p1=a",$data["uri"]);
+
+		$data = $adf->get("http_requests/detail/?format=json&p1=a",array("p2" => "b","p3" => "c"));
+		$this->assertEquals("/api/en/http_requests/detail/?format=json&p1=a&p2=b&p3=c",$data["uri"]);
 	}
 
 	function test_logger(){
