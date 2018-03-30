@@ -235,7 +235,7 @@ class ApiDataFetcher{
 		}
 		$url .= "$action/";
 		if($options["method"]!="POST" || $options["file"] || !is_null($options["raw_post_data"])){
-			$url .= "?".$this->_joinParams($params);
+			$url = $this->_addParamsToUrl($url,$params);
 		}
 		$this->url = $url;
 		$this->method = $options["method"];
@@ -383,6 +383,11 @@ invalid json:\n".$u->getContent()
 			$out[] = urlencode($key)."=".urlencode($value);
 		}
 		return join("&",$out);
+	}
+
+	protected function _addParamsToUrl($url,$params){
+		$connector = preg_match('/\?/',$url) ? "&" : "?";
+		return $url.$connector.$this->_joinParams($params);
 	}
 
 	function _writeCache($url,$status_code,$data,$errors){
