@@ -295,13 +295,6 @@ class ApiDataFetcher{
 
 		$this->duration = $timer->getResult();
 
-		ApiDataFetcher::$QueriesExecuted[] = array(
-			"method" => $options["method"],
-			"url" => $url,
-			"params" => $params,
-			"duration" => $timer->getResult()
-		);
-
 		$this->status_code = $u->getStatusCode();
 
 		// TODO: vyresit zalogovani parametru POSTem
@@ -320,6 +313,16 @@ invalid json:\n".$u->getContent()
 			);
 			throw new Exception("json_decode() failed on $url (HTTP $this->status_code)");
 		}
+
+		ApiDataFetcher::$QueriesExecuted[] = array(
+			"method" => $options["method"],
+			"url" => $url,
+			"status_code" => $this->status_code,
+			"status_message" => $u->getStatusMessage(),
+			"params" => $params,
+			"duration" => $timer->getResult(),
+			"data" => $d,
+		);
 
 		if(preg_match('/^2/',$this->status_code)){
 			$this->data = $d;
@@ -440,10 +443,12 @@ invalid json:\n".$u->getContent()
 		foreach($stats as $el){
 			$out[] = $this->_formatSeconds($el["duration"])."s";
 			$out[] = "$el[method] <a href='$el[url]'>$el[url]</a>";
+			$out[] = "HTTP $el[status_code] $el[status_message]";
 			foreach($el["params"] as &$_p){
 				$_p = is_object($_p) ? "$_p" : $_p; // prevod zejmena $api_session na string
 			}
-			$out[] = h(print_r($el["params"],true));
+			$out[] = $this->_makeCollapsible("Params",h($this->_varExport($el["params"])));
+			$out[] = $this->_makeCollapsible("Result",h($this->_varExport($el["data"])));
 			$out[] = "";
 		}
 		$out[] = "</pre>";
@@ -453,6 +458,26 @@ invalid json:\n".$u->getContent()
 
 	function _formatSeconds($sec){
 		return number_format($sec,3,".","");
+	}
+
+	protected function _varExport($var){
+		$out = var_export($var,true);
+		$out = preg_replace('/\n\s*array \(/s','array (',$out);
+		$out = preg_replace('/array \(\n\s*\)/s','array()',$out);
+		return $out;
+	}
+
+	protected function _makeCollapsible($label,$content){
+		$id = "adf_stats_".uniqid();
+		$id_to_be_hidden = $id."_h";
+
+		$out = array();
+		$out[] = '<span id="'.$id_to_be_hidden.'"><a href="#" onclick="JavaScript: document.getElementById(\''.$id.'\').style.display=\'inline\'; document.getElementById(\''.$id_to_be_hidden.'\').style.display=\'none\'; return false;" title="expand">'.$label.'(+)</a></span><span style="display:none;" id="'.$id.'"><a href="#" onclick="JavaScript: document.getElementById(\''.$id_to_be_hidden.'\').style.display=\'inline\'; document.getElementById(\''.$id.'\').style.display=\'none\'; return false;" title="collapse">'.$label.'(</a>';
+		$out[] = preg_replace('/^array \(/','',$content);
+		$out[] = "</span>";
+		return join("",$out);
+
+		return $title.":\n".$content;
 	}
 
 	/**
