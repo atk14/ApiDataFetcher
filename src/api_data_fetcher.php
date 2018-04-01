@@ -241,6 +241,8 @@ class ApiDataFetcher{
 			$url .= "/";
 		}
 
+		$action_url = $url;
+
 		if($options["method"]!="POST" || $options["file"] || !is_null($options["raw_post_data"])){
 			$url = $this->_addParamsToUrl($url,$params);
 		}
@@ -295,13 +297,6 @@ class ApiDataFetcher{
 
 		$this->duration = $timer->getResult();
 
-		ApiDataFetcher::$QueriesExecuted[] = array(
-			"method" => $options["method"],
-			"url" => $url,
-			"params" => $params,
-			"duration" => $timer->getResult()
-		);
-
 		$this->status_code = $u->getStatusCode();
 
 		// TODO: vyresit zalogovani parametru POSTem
@@ -320,6 +315,18 @@ invalid json:\n".$u->getContent()
 			);
 			throw new Exception("json_decode() failed on $url (HTTP $this->status_code)");
 		}
+
+		ApiDataFetcher::$QueriesExecuted[] = array(
+			"action" => $action,
+			"action_url" => $action_url,
+			"method" => $options["method"],
+			"url" => $url,
+			"status_code" => $this->status_code,
+			"status_message" => $u->getStatusMessage(),
+			"params" => $params,
+			"duration" => $timer->getResult(),
+			"data" => $d,
+		);
 
 		if(preg_match('/^2/',$this->status_code)){
 			$this->data = $d;
@@ -434,16 +441,24 @@ invalid json:\n".$u->getContent()
 		}
 		$out = array();
 		$out[] = "<div style=\"text-align: left;\">";
-		$out[] = "<h3>total requests: ".sizeof($stats)."</h3>";
-		$out[] = "<h3>total time: ".$this->_formatSeconds($total_time)."s</h3>";
+		$out[] = "Total requests: ".sizeof($stats)."<br>";
+		$out[] = "Total time: ".$this->_formatSeconds($total_time);
+		$out[] = "<br><br>";
 		$out[] = "<pre>";
 		foreach($stats as $el){
-			$out[] = $this->_formatSeconds($el["duration"])."s";
-			$out[] = "$el[method] <a href='$el[url]'>$el[url]</a>";
+			$out[] = sprintf('action: <a href="%s">%s</a>',h($el["action_url"]),h($el["action"]));
+			$out[] = "duration: ".$this->_formatSeconds($el["duration"]);
+			if($el["method"]=="GET"){
+				$out[] = "$el[method] <a href='$el[url]'>$el[url]</a>";
+			}else{
+				$out[] = "$el[method] $el[url]";
+			}
+			$out[] = "response: HTTP $el[status_code] $el[status_message]";
 			foreach($el["params"] as &$_p){
 				$_p = is_object($_p) ? "$_p" : $_p; // prevod zejmena $api_session na string
 			}
-			$out[] = h(print_r($el["params"],true));
+			$out[] = $this->_dumpVar("params",$el["params"]);
+			$out[] = $this->_dumpVar("result",$el["data"]);
 			$out[] = "";
 		}
 		$out[] = "</pre>";
@@ -452,7 +467,43 @@ invalid json:\n".$u->getContent()
 	}
 
 	function _formatSeconds($sec){
-		return number_format($sec,3,".","");
+		return number_format($sec,3,".","")."s";
+	}
+
+	protected function _varExport($var){
+		$out = var_export($var,true);
+		$out = preg_replace('/\n\s*array \(/s','array (',$out);
+		$out = preg_replace('/array \(\n\s*\)/s','array()',$out);
+		return $out;
+	}
+
+	protected function _dumpVar($label,$var,$options = array()){
+		$options += array(
+			"make_collapsible" => "auto", // "auto", true, false
+		);
+
+		$content = h($this->_varExport($var));
+		$content = preg_replace('/^array \(/','',$content);
+
+		if($options["make_collapsible"]=="auto"){
+			$options["make_collapsible"] = strlen($content)>1000;
+		}
+
+		$out = array();
+
+		if($options["make_collapsible"]){
+			$id = "adf_stats_".uniqid();
+			$id_to_be_hidden = $id."_h";
+
+			$out[] = '<span id="'.$id_to_be_hidden.'"><a href="#" onclick="JavaScript: document.getElementById(\''.$id.'\').style.display=\'inline\'; document.getElementById(\''.$id_to_be_hidden.'\').style.display=\'none\'; return false;" title="expand">'.$label.': (+)</a></span><span style="display:none;" id="'.$id.'"><a href="#" onclick="JavaScript: document.getElementById(\''.$id_to_be_hidden.'\').style.display=\'inline\'; document.getElementById(\''.$id.'\').style.display=\'none\'; return false;" title="collapse">'.$label.': (</a>';
+			$out[] = $content;
+			$out[] = "</span>";
+		}else{
+			$out[] = $label;
+			$out[] = ": (";
+			$out[] = $content;
+		}
+		return join("",$out);
 	}
 
 	/**
