@@ -447,18 +447,18 @@ invalid json:\n".$u->getContent()
 		$out[] = "<pre>";
 		foreach($stats as $el){
 			$out[] = sprintf('action: <a href="%s">%s</a>',h($el["action_url"]),h($el["action"]));
+			$out[] = "duration: ".$this->_formatSeconds($el["duration"]);
 			if($el["method"]=="GET"){
 				$out[] = "$el[method] <a href='$el[url]'>$el[url]</a>";
 			}else{
 				$out[] = "$el[method] $el[url]";
 			}
-			$out[] = "duration: ".$this->_formatSeconds($el["duration"]);
 			$out[] = "response: HTTP $el[status_code] $el[status_message]";
 			foreach($el["params"] as &$_p){
 				$_p = is_object($_p) ? "$_p" : $_p; // prevod zejmena $api_session na string
 			}
-			$out[] = $this->_makeCollapsible("params",h($this->_varExport($el["params"])));
-			$out[] = $this->_makeCollapsible("result",h($this->_varExport($el["data"])));
+			$out[] = $this->_dumpVar("params",$el["params"]);
+			$out[] = $this->_dumpVar("result",$el["data"]);
 			$out[] = "";
 		}
 		$out[] = "</pre>";
@@ -477,12 +477,18 @@ invalid json:\n".$u->getContent()
 		return $out;
 	}
 
-	protected function _makeCollapsible($label,$content,$options = array()){
+	protected function _dumpVar($label,$var,$options = array()){
 		$options += array(
-			"make_collapsible" => true, // true, false
+			"make_collapsible" => "auto", // "auto", true, false
 		);
 
+		$content = h($this->_varExport($var));
 		$content = preg_replace('/^array \(/','',$content);
+
+		if($options["make_collapsible"]=="auto"){
+			$options["make_collapsible"] = strlen($content)>1000;
+		}
+
 		$out = array();
 
 		if($options["make_collapsible"]){
