@@ -241,6 +241,8 @@ class ApiDataFetcher{
 			$url .= "/";
 		}
 
+		$action_url = $url;
+
 		if($options["method"]!="POST" || $options["file"] || !is_null($options["raw_post_data"])){
 			$url = $this->_addParamsToUrl($url,$params);
 		}
@@ -315,6 +317,8 @@ invalid json:\n".$u->getContent()
 		}
 
 		ApiDataFetcher::$QueriesExecuted[] = array(
+			"action" => $action,
+			"action_url" => $action_url,
 			"method" => $options["method"],
 			"url" => $url,
 			"status_code" => $this->status_code,
@@ -437,18 +441,24 @@ invalid json:\n".$u->getContent()
 		}
 		$out = array();
 		$out[] = "<div style=\"text-align: left;\">";
-		$out[] = "<h3>total requests: ".sizeof($stats)."</h3>";
-		$out[] = "<h3>total time: ".$this->_formatSeconds($total_time)."s</h3>";
+		$out[] = "Total requests: ".sizeof($stats)."<br>";
+		$out[] = "Total time: ".$this->_formatSeconds($total_time);
+		$out[] = "<br><br>";
 		$out[] = "<pre>";
 		foreach($stats as $el){
-			$out[] = $this->_formatSeconds($el["duration"])."s";
-			$out[] = "$el[method] <a href='$el[url]'>$el[url]</a>";
-			$out[] = "HTTP $el[status_code] $el[status_message]";
+			$out[] = sprintf('action: <a href="%s">%s</a>',h($el["action_url"]),h($el["action"]));
+			if($el["method"]=="GET"){
+				$out[] = "$el[method] <a href='$el[url]'>$el[url]</a>";
+			}else{
+				$out[] = "$el[method] $el[url]";
+			}
+			$out[] = "duration: ".$this->_formatSeconds($el["duration"]);
+			$out[] = "response: HTTP $el[status_code] $el[status_message]";
 			foreach($el["params"] as &$_p){
 				$_p = is_object($_p) ? "$_p" : $_p; // prevod zejmena $api_session na string
 			}
-			$out[] = $this->_makeCollapsible("Params",h($this->_varExport($el["params"])));
-			$out[] = $this->_makeCollapsible("Result",h($this->_varExport($el["data"])));
+			$out[] = $this->_makeCollapsible("params",h($this->_varExport($el["params"])));
+			$out[] = $this->_makeCollapsible("result",h($this->_varExport($el["data"])));
 			$out[] = "";
 		}
 		$out[] = "</pre>";
@@ -457,7 +467,7 @@ invalid json:\n".$u->getContent()
 	}
 
 	function _formatSeconds($sec){
-		return number_format($sec,3,".","");
+		return number_format($sec,3,".","")."s";
 	}
 
 	protected function _varExport($var){
@@ -467,17 +477,27 @@ invalid json:\n".$u->getContent()
 		return $out;
 	}
 
-	protected function _makeCollapsible($label,$content){
-		$id = "adf_stats_".uniqid();
-		$id_to_be_hidden = $id."_h";
+	protected function _makeCollapsible($label,$content,$options = array()){
+		$options += array(
+			"make_collapsible" => true, // true, false
+		);
 
+		$content = preg_replace('/^array \(/','',$content);
 		$out = array();
-		$out[] = '<span id="'.$id_to_be_hidden.'"><a href="#" onclick="JavaScript: document.getElementById(\''.$id.'\').style.display=\'inline\'; document.getElementById(\''.$id_to_be_hidden.'\').style.display=\'none\'; return false;" title="expand">'.$label.'(+)</a></span><span style="display:none;" id="'.$id.'"><a href="#" onclick="JavaScript: document.getElementById(\''.$id_to_be_hidden.'\').style.display=\'inline\'; document.getElementById(\''.$id.'\').style.display=\'none\'; return false;" title="collapse">'.$label.'(</a>';
-		$out[] = preg_replace('/^array \(/','',$content);
-		$out[] = "</span>";
-		return join("",$out);
 
-		return $title.":\n".$content;
+		if($options["make_collapsible"]){
+			$id = "adf_stats_".uniqid();
+			$id_to_be_hidden = $id."_h";
+
+			$out[] = '<span id="'.$id_to_be_hidden.'"><a href="#" onclick="JavaScript: document.getElementById(\''.$id.'\').style.display=\'inline\'; document.getElementById(\''.$id_to_be_hidden.'\').style.display=\'none\'; return false;" title="expand">'.$label.': (+)</a></span><span style="display:none;" id="'.$id.'"><a href="#" onclick="JavaScript: document.getElementById(\''.$id_to_be_hidden.'\').style.display=\'inline\'; document.getElementById(\''.$id.'\').style.display=\'none\'; return false;" title="collapse">'.$label.': (</a>';
+			$out[] = $content;
+			$out[] = "</span>";
+		}else{
+			$out[] = $label;
+			$out[] = ": (";
+			$out[] = $content;
+		}
+		return join("",$out);
 	}
 
 	/**
