@@ -30,7 +30,7 @@ class TcPostJson extends TcBase {
 	}
 
 	function _headersToAssociativeArray($headers){
-		$out = [];
+		$out = array();
 		foreach($headers as $header){
 			$out[$header["name"]] = $header["value"];
 		}
