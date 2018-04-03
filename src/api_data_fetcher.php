@@ -159,17 +159,26 @@ class ApiDataFetcher{
 
 	/**
 	 *
-	 *	$api_data_fetcher->postJson('path_to_action','{"a":"b","c":"d"}');
+	 *	$api_data_fetcher->postJson('action','{"a":"b","c":"d"}');
 	 *
-	 *	$api_data_fetcher->postJson('path_to_action/?url_param=value',["a" => "b", "c" => "d"]);
+	 *	// PHP array will be automatically encoded into a JSON
+	 *	$api_data_fetcher->postJson('action',["a" => "b", "c" => "d"]);
+	 *
+	 *	// URL params can be a part of the action
+	 *	$api_data_fetcher->postJson('action/?url_param=value',["a" => "b", "c" => "d"]);
+	 *	// or passed in option
+	 *	$api_data_fetcher->postJson('action',["a" => "b", "c" => "d"],["params" => ["url_param" => "value"]]);
 	 */
-	function postJson($action,$json,$params = array(),$options = array()){
+	function postJson($action,$json,$options = array()){
 		if(!is_string($json)){
 			$json = json_encode($json);
 		}
 		$options += array(
 			"mime_type" => "application/json",
+			"params" => array(),
 		);
+		$params = $options["params"];
+		unset($options["params"]);
 		return $this->postRawData($action,$json,$params,$options);
 	}
 
@@ -226,6 +235,7 @@ class ApiDataFetcher{
 			"acceptable_error_codes" => array(),
 			"file" => array(), // see postFile(),
 			"raw_post_data" => null,
+			"additional_headers" => array() // array("X-Forwarded-For: 127.0.0.1","X-Logged-User-Id: 123")
 		);
 
 		$this->errors = array();
