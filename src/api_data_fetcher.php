@@ -36,6 +36,7 @@ class ApiDataFetcher{
 	var $status_code;
 	var $user_agent;
 	var $additional_headers;
+	var $automatically_add_leading_slash;
 	var $automatically_add_trailing_slash;
 
 	var $url;
@@ -80,6 +81,7 @@ class ApiDataFetcher{
 			"cache_storage" => new CacheFileStorage(),
 			"user_agent" => sprintf("ApiDataFetcher/%s UrlFetcher/%s",self::VERSION,UrlFetcher::VERSION),
 			"additional_headers" => array(), // array("X-Forwarded-For: 127.0.0.1","X-Logged-User-Id: 123")
+			"automatically_add_leading_slash" => true,
 			"automatically_add_trailing_slash" => true,
 		);
 
@@ -106,6 +108,7 @@ class ApiDataFetcher{
 		$this->cache_storage = $options["cache_storage"];
 		$this->user_agent = $options["user_agent"];
 		$this->additional_headers = $options["additional_headers"];
+		$this->automatically_add_leading_slash = $options["automatically_add_leading_slash"];
 		$this->automatically_add_trailing_slash = $options["automatically_add_trailing_slash"];
 	}
 
@@ -157,6 +160,8 @@ class ApiDataFetcher{
 	/**
 	 *
 	 *	$api_data_fetcher->postJson('path_to_action','{"a":"b","c":"d"}');
+	 *
+	 *	$api_data_fetcher->postJson('path_to_action/?url_param=value',["a" => "b", "c" => "d"]);
 	 */
 	function postJson($action,$json,$params = array(),$options = array()){
 		if(!is_string($json)){
@@ -234,7 +239,13 @@ class ApiDataFetcher{
 
 		$url = $this->base_url;
 		if($lang){
+			if($this->automatically_add_leading_slash && !preg_match('/\/$/',$url)){
+				$url .= "/";
+			}
 			$url .= "$lang/";
+		}
+		if($this->automatically_add_leading_slash && !preg_match('/\/$/',$url)){
+			$url .= "/";
 		}
 		$url .= "$action";
 		if($this->automatically_add_trailing_slash && !preg_match('/\/$/',$url) && !preg_match('/\?/',$url)){

@@ -114,6 +114,14 @@ class TcApiDataFetcher extends TcBase {
 		$data = $adf->get("non_existing_resource/detail",array("id" => "123"),array("acceptable_error_codes" => array(404)));
 		$this->assertEquals("http://skelet.atk14.net/api/non_existing_resource/detail/?id=123&format=json",$adf->getUrl());
 
+		// leading slash
+		$adf = new ApiDataFetcher("http://skelet.atk14.net/api",array( // slash is missing!
+			"logger" => new Logger(),
+		));
+
+		$data = $adf->get("login_availabilities/detail",array("login" => "jean.marais"));
+		$this->assertEquals("http://skelet.atk14.net/api/en/login_availabilities/detail/?login=jean.marais&format=json",$adf->getUrl());
+
 		// parameters in action
 		$adf = new ApiDataFetcher("http://www.atk14.net/api/",array(
 			"logger" => new Logger(),
