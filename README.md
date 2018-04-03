@@ -8,7 +8,10 @@ Basic usage
 -----------
 
     $adf = new ApiDataFetcher("http://skelet.atk14.net/api/");
+
     $data = $adf->get("articles/detail",["id" => 123]);
+    // or
+    $data = $adf->get("articles/detail/?id=123");
 
     $title = $data["title"];
 
@@ -16,10 +19,48 @@ In fact in this example a HTTP GET request is made on URL http://skelet.atk14.ne
 
 A post request can be made this way:
 
-    $data = $adf->post("logins/create_new",[
-      "login" => "johny.long",
-      "password" => "JulieIsNoMore"
+    $data = $adf->post("articles/create_new",[
+      "title" => "Brand New Article",
+      "body" => "Once upon a time..."
     ]);
+    // or
+    $data = $adf->post("articles/create_new/?title=Brand+New+Article&body=Once+upon+a+time...");
+
+The parameter format=json is added automatically to every request. It's a convention in ATK14 APIs. This behaviour can be disabled by setting an option in the constructor.
+
+For completeness there are also methods *put* and *delete*.
+
+    $data = $adf->put("articles",[
+      "title" => "Brand New Article",
+      "body" => "Once upon a time..."
+    ]);
+    // or
+    $data = $adf->put("articles/?title=Brand+New+Article&body=Once+upon+a+time...");
+
+    $data = $adf->delete("article",["id" => 123]);
+    // or
+    $data = $adf->delete("article/?id=123");
+
+A method for uploading a file:
+
+    $data = $adf->postFile("images/create_new","/path/to/image.jpg",["title" => "Beautiful Flower", "description" => "..."]);
+    // or
+    $file_specs = [
+      "path" => "/path/to/file",
+      "postname" => "image",
+      "name" => "flower.jpg",
+      "mime_type" => "image/jpeg",
+    ];
+    $data = $adf->postFile("images/create_new",$file_specs,["title" => "Beautiful Flower", "description" => "..."]);
+
+A handy method for posting JSON:
+
+    $params = ["param1" => "val1", "param2" => "val2"];
+    $json = json_encode($params);
+
+    $data = $adf->postJson("endpoint",$json);
+    // or
+    $data = $adf->postJson("endpoint",$params);
 
 ### Handling error codes
 
@@ -67,7 +108,7 @@ On a non-ATK14 API you may want to disable language considering at all.
 
 Does an API require basic authentication? No problem for the ApiDataFetcher!
 
-    $adf = new ApiDataFetcher("https://username:password@api-on-the.net");
+    $adf = new ApiDataFetcher("https://username:password@api-on-the.net/api/");
 
 ### Tracy panel integration
 

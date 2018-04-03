@@ -3,10 +3,14 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
-[1.5] - 2018-04-01
+[1.5] - 2018-04-03
 ------------------
 
 ### Added
+- Added methods ApiDataFetcher::put() and ApiDataFetcher::delete() in order to performing PUT and DELETE requests
+- Added method ApiDataFetcher::postRawData()
+- Method for easy JSON posting added: ApiDataFetcher::postJson()
+- Added a new options to the constructor: default_params
 - Better statistics
 
 [1.4] - 2018-03-23
