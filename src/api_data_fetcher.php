@@ -118,6 +118,8 @@ class ApiDataFetcher{
 	function getErrors(){ return $this->errors; }
 
 	/**
+	 * Performs HTTP GET call
+	 *
 	 *	$api_data_fetcher->get("articles/detail",array("id" => 123));
 	 *
 	 *	$api_data_fetcher->get("articles/index",array("offset" => 10));
@@ -131,6 +133,7 @@ class ApiDataFetcher{
 	}
 
 	/**
+	 * Performs HTTP POST call
 	 *
 	 *	$api_data_fetcher->post("articles/create_new",array(
 	 *		"title" => "Very Nice Article"
@@ -142,44 +145,19 @@ class ApiDataFetcher{
 	}
 
 	/**
-	 *
-	 *	$raw_data = json_encode($data);
-	 *	$api_data_fetcher->postRawData("articles/edit",$raw_data,array("id" => 123),array("mime_type" => "application/json"));
+	 * Performs HTTP PUT call
 	 */
-	function postRawData($action,$content,$params = array(),$options = array()){
-		$options += array(
-			"mime_type" => "application/data"
-		);
-
-		$options["method"] = "POST";
-		$options["raw_post_data"] = $content;
-
+	function put($action,$params = array(),$options = array()){
+		$options["method"] = "PUT";
 		return $this->_doRequest($action,$params,$options);
 	}
 
 	/**
-	 *
-	 *	$api_data_fetcher->postJson('action','{"a":"b","c":"d"}');
-	 *
-	 *	// PHP array will be automatically encoded into a JSON
-	 *	$api_data_fetcher->postJson('action',["a" => "b", "c" => "d"]);
-	 *
-	 *	// URL params can be a part of the action
-	 *	$api_data_fetcher->postJson('action/?url_param=value',["a" => "b", "c" => "d"]);
-	 *	// or passed in option
-	 *	$api_data_fetcher->postJson('action',["a" => "b", "c" => "d"],["params" => ["url_param" => "value"]]);
+	 * Performs HTTP DELETE call
 	 */
-	function postJson($action,$json,$options = array()){
-		if(!is_string($json)){
-			$json = json_encode($json);
-		}
-		$options += array(
-			"mime_type" => "application/json",
-			"params" => array(),
-		);
-		$params = $options["params"];
-		unset($options["params"]);
-		return $this->postRawData($action,$json,$params,$options);
+	function delete($action,$params = array(),$options = array()){
+		$options["method"] = "DELETE";
+		return $this->_doRequest($action,$params,$options);
 	}
 
 	/**
@@ -220,6 +198,50 @@ class ApiDataFetcher{
 
 		return $this->_doRequest($action,$params,$options);
 	}
+
+	/**
+	 * Sends raw data to the specific action
+	 *
+	 *	$raw_data = json_encode($data);
+	 *	$api_data_fetcher->postRawData("articles/edit",$raw_data,array("id" => 123),array("mime_type" => "application/json"));
+	 */
+	function postRawData($action,$content,$params = array(),$options = array()){
+		$options += array(
+			"mime_type" => "application/data"
+		);
+
+		$options["method"] = "POST";
+		$options["raw_post_data"] = $content;
+
+		return $this->_doRequest($action,$params,$options);
+	}
+
+	/**
+	 * Sends JSON to the specific action
+	 *
+	 *	$api_data_fetcher->postJson('action','{"a":"b","c":"d"}');
+	 *
+	 *	// array will be automatically encoded into a JSON
+	 *	$api_data_fetcher->postJson('action',["a" => "b", "c" => "d"]);
+	 *
+	 *	// URL params can be a part of the action
+	 *	$api_data_fetcher->postJson('action/?url_param=value',["a" => "b", "c" => "d"]);
+	 *	// or passed in option
+	 *	$api_data_fetcher->postJson('action',["a" => "b", "c" => "d"],["params" => ["url_param" => "value"]]);
+	 */
+	function postJson($action,$json,$options = array()){
+		if(!is_string($json)){
+			$json = json_encode($json);
+		}
+		$options += array(
+			"mime_type" => "application/json",
+			"params" => array(),
+		);
+		$params = $options["params"];
+		unset($options["params"]);
+		return $this->postRawData($action,$json,$params,$options);
+	}
+
 
 	/**
 	 *	$this->_doRequest("products/detail",array("catalog_id" => "1234/3345566"));
@@ -310,7 +332,9 @@ class ApiDataFetcher{
 
 			$u->post($params);
 		}else{
-			$u->fetchContent();
+			$u->fetchContent(array(
+				"request_method" => $options["method"],
+			));
 		}
 		$this->status_code = $u->getStatusCode();
 

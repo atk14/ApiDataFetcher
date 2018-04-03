@@ -72,6 +72,18 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals(201,$adf->getStatusCode());
 		$this->assertInternalType("array",$data);
 		$this->assertEquals($login,$data["login"]);
+
+		// ### put method
+
+		$data = $adf->put("http_requests/detail",array("id" => 123));
+		$this->assertEquals("PUT",$data["method"]);
+		$this->assertEquals("http://www.atk14.net/api/en/http_requests/detail/?id=123&format=json",$data["url"]);
+
+		// ### delete method
+
+		$data = $adf->delete("http_requests/detail",array("id" => 456));
+		$this->assertEquals("DELETE",$data["method"]);
+		$this->assertEquals("http://www.atk14.net/api/en/http_requests/detail/?id=456&format=json",$data["url"]);
 	}
 
 	function test_lang(){
