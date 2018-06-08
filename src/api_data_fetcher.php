@@ -351,14 +351,24 @@ class ApiDataFetcher{
 			throw new Exception("No content on $url (HTTP $this->status_code)");
 		}
 
-		$d = json_decode($u->getContent(),true);
-		if(is_null($d)){
-			trigger_error("ApiDataFetcher:
+		if(strlen($content)>0){
+
+			$d = json_decode($content,true);
+			if(is_null($d)){
+				trigger_error("ApiDataFetcher:
 URL: $url
 response code: ".$u->getStatusCode()."
 invalid json:\n".$u->getContent()
-			);
-			throw new Exception("json_decode() failed on $url (HTTP $this->status_code)");
+				);
+				throw new Exception("json_decode() failed on $url (HTTP $this->status_code)");
+			}
+
+		}else{
+
+			// The $content is empty (HTTP status code is 204).
+			// Empty answer means empty JSON.
+			$d = array();
+
 		}
 
 		ApiDataFetcher::$QueriesExecuted[] = array(
