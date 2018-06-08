@@ -3,6 +3,12 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.5.1] - 2018-06-08
+--------------------
+
+### Fixed
+- Empty answer with HTTP status 204 is handled properly
+
 [1.5] - 2018-04-03
 ------------------
 
