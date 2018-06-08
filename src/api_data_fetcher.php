@@ -347,7 +347,7 @@ class ApiDataFetcher{
 		// TODO: vyresit zalogovani parametru POSTem
 
 		$content = $u->getContent();
-		if(!strlen($content)){
+		if(!strlen($content) && ($this->status_code!=204)){
 			throw new Exception("No content on $url (HTTP $this->status_code)");
 		}
 
