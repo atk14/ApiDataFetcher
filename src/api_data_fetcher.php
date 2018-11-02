@@ -360,7 +360,7 @@ URL: $url
 response code: ".$u->getStatusCode()."
 invalid json:\n".$u->getContent()
 				);
-				throw new Exception("json_decode() failed on $url (HTTP $this->status_code)");
+				throw new Exception("json_decode() failed on $url (HTTP status code: $this->status_code; content: ".$u->getContent().")");
 			}
 
 		}else{
