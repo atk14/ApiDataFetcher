@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.6] - 2018-11-09
+------------------
+
+- Added method ApiDataFetcher::getApiUrl()
+
 [1.5.1] - 2018-06-08
 --------------------
 
