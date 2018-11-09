@@ -168,4 +168,18 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals(1,sizeof($logger->messages));
 		$this->assertContains('[debug] ApiDataFetcher: GET http://skelet.atk14.net/api/en/login_availabilities/detail/?login=yuri&format=json',$logger->messages[0]);
 	}
+
+	function test_getApiUrl(){
+		$adf = new ApiDataFetcher("http://www.atk14.net/api/",array(
+			"logger" => new Logger()
+		));
+
+		$this->assertEquals("http://www.atk14.net/api/",$adf->getApiUrl());
+
+		$data = $adf->get("login_availabilities/detail",array(
+			"login" => "turbo.bug",
+		));
+
+		$this->assertEquals("http://www.atk14.net/api/",$adf->getApiUrl());
+	}
 }

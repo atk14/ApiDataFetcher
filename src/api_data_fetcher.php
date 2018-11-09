@@ -113,6 +113,17 @@ class ApiDataFetcher{
 	}
 
 	/**
+	 * Returns the base API URL
+	 *
+	 *	echo $apf->getApiUrl(); // e.g. "https://site.net/api/"
+	 *
+	 * @return string
+	 */
+	function getApiUrl(){
+		return $this->base_url;
+	}
+
+	/**
 	 * @return string[]
 	 */
 	function getErrors(){ return $this->errors; }
