@@ -265,6 +265,7 @@ class ApiDataFetcher{
 
 		$options += array(
 			"cache" => 0,
+			"return_cached_content_on_error" => false,
 			"acceptable_error_codes" => array(),
 			"file" => array(), // see postFile(),
 			"raw_post_data" => null,
@@ -304,11 +305,9 @@ class ApiDataFetcher{
 		$this->method = $options["method"];
 		$this->duration = null;
 
-		if($options["cache"]>0 && ($ar = $this->_readCache($url,$options["cache"]))){
-			$this->data = $ar["data"];
-			$this->status_code = $ar["status_code"];
-			$this->errors = $ar["errors"];
-			return $this->data;
+		$cached_ar = null;
+		if($options["cache"]>0 && ($ar = $this->_readCache($url,$options["cache"],$cached_ar))){
+			return $this->__setCacheAndReturnData($ar);
 		}
 
 		// Pro stahovani dat se pouziva UrlFetcher - soucast ATK14
@@ -359,6 +358,9 @@ class ApiDataFetcher{
 
 		$content = $u->getContent();
 		if(!strlen($content) && ($this->status_code!=204)){
+			if($options["return_cached_content_on_error"] && $cached_ar){
+				return $this->__useOutdatedCache($cached_ar);
+			}
 			throw new Exception("No content on $url (HTTP $this->status_code)");
 		}
 
@@ -371,6 +373,9 @@ URL: $url
 response code: ".$u->getStatusCode()."
 invalid json:\n".$u->getContent()
 				);
+				if($options["return_cached_content_on_error"] && $cached_ar){
+					return $this->__useOutdatedCache($cached_ar);
+				}
 				throw new Exception("json_decode() failed on $url (HTTP status code: $this->status_code; content: ".$u->getContent().")");
 			}
 
@@ -410,6 +415,9 @@ invalid json:\n".$u->getContent()
 				"requested URL: ".$this->request->getUrl()
 			);
 			$this->_loggerFlush();
+			if($options["return_cached_content_on_error"] && $cached_ar){
+				return $this->__useOutdatedCache($cached_ar);
+			}
 			throw new Exception("HTTP status code $this->status_code (".join(" | ",$this->errors)."), url: $url");
 		}else{
 			$this->_loggerDebug(
@@ -422,6 +430,18 @@ invalid json:\n".$u->getContent()
 		}
 
 		return $this->data;
+	}
+
+	function __setCacheAndReturnData($ar){
+		$this->data = $ar["data"];
+		$this->status_code = $ar["status_code"];
+		$this->errors = $ar["errors"];
+		return $this->data;
+	}
+
+	function __useOutdatedCache($ar){
+		$this->_loggerDebug("outdated cache returned due to an error occurrence: $this->url");
+		return $this->__setCacheAndReturnData($ar);
 	}
 
 	/**
@@ -482,7 +502,7 @@ invalid json:\n".$u->getContent()
 		$this->_loggerDebug("writing cache");
 	}
 
-	function _readCache($url,$max_age){
+	function _readCache($url,$max_age,&$ar){
 		if($ar = $this->cache_storage->read($url)){
 			if($ar["created"]>=time()-$max_age){
 				$this->_loggerDebug("loaded from cache: $url");
