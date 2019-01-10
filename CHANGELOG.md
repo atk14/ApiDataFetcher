@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.7] - 2019-01-10
+------------------
+
+- Added option return_cached_content_on_error
+
 [1.6] - 2018-11-09
 ------------------
 
