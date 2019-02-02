@@ -110,6 +110,16 @@ Does an API require basic authentication? No problem for the ApiDataFetcher!
 
     $adf = new ApiDataFetcher("https://username:password@api-on-the.net/api/");
 
+### Caching
+
+    $adf->get("articles/index",["year" => "100"],["cache" => 600]); // caching fetched content for 10 minutes (600 seconds)
+
+    // use expired cached content when an error occurs
+    $adf->get("articles/index",["year" => "100"],[
+      "cache" => 600,
+      "return_cached_content_on_error" => true
+    ]); 
+
 ### Tracy panel integration
 
 ApiDataFetcher package comes with ApiDataFetcherPanel for easy integration into the popular debugger Tracy (https://packagist.org/packages/tracy/tracy)
