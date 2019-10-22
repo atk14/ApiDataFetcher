@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.8] - 2019-10-22
+------------------
+
+- Added option "return_raw_content" (by default false) to ApiDataFetcher::getContent()
+
 [1.7] - 2019-01-10
 ------------------
 
