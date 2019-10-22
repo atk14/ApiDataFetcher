@@ -2,7 +2,7 @@
 class TcApiDataFetcher extends TcBase {
 
 	function test(){
-		$adf = new ApiDataFetcher("http://www.atk14.net/api/",array(
+		$adf = new ApiDataFetcher("https://www.atk14.net/api/",array(
 			"logger" => new Logger()
 		));
 
@@ -16,7 +16,7 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals(200,$adf->getStatusCode());
 		$this->assertEquals(array("status" => "available"),$data);
 		$this->assertEquals("GET",$adf->getMethod());
-		$this->assertEquals("http://www.atk14.net/api/en/login_availabilities/detail/?login=$login&format=json",$adf->getUrl());
+		$this->assertEquals("https://www.atk14.net/api/en/login_availabilities/detail/?login=$login&format=json",$adf->getUrl());
 		$duration = $adf->getDuration();
 		$this->assertTrue(is_float($duration));
 		$this->assertTrue($duration>0.0);
@@ -32,7 +32,7 @@ class TcApiDataFetcher extends TcBase {
 
 		$this->assertEquals(201,$adf->getStatusCode());
 		$this->assertEquals("POST",$adf->getMethod());
-		$this->assertEquals("http://www.atk14.net/api/en/users/create_new/",$adf->getUrl());
+		$this->assertEquals("https://www.atk14.net/api/en/users/create_new/",$adf->getUrl());
 
 		// ### login_availabilities
 
@@ -77,28 +77,28 @@ class TcApiDataFetcher extends TcBase {
 
 		$data = $adf->put("http_requests/detail",array("id" => 123));
 		$this->assertEquals("PUT",$data["method"]);
-		$this->assertEquals("http://www.atk14.net/api/en/http_requests/detail/?id=123&format=json",$data["url"]);
+		$this->assertEquals("https://www.atk14.net/api/en/http_requests/detail/?id=123&format=json",$data["url"]);
 
 		// ### delete method
 
 		$data = $adf->delete("http_requests/detail",array("id" => 456));
 		$this->assertEquals("DELETE",$data["method"]);
-		$this->assertEquals("http://www.atk14.net/api/en/http_requests/detail/?id=456&format=json",$data["url"]);
+		$this->assertEquals("https://www.atk14.net/api/en/http_requests/detail/?id=456&format=json",$data["url"]);
 	}
 
 	function test_lang(){
-		$adf = new ApiDataFetcher("http://skelet.atk14.net/api/",array(
+		$adf = new ApiDataFetcher("https://skelet.atk14.net/api/",array(
 			"logger" => new Logger(),
 			"lang" => "en",
 		));
 
 		$data = $adf->get("login_availabilities/detail",array("login" => "yuri"));
 		$this->assertEquals(array("status" => "available"),$data);
-		$this->assertEquals("http://skelet.atk14.net/api/en/login_availabilities/detail/?login=yuri&format=json",$adf->getUrl());
+		$this->assertEquals("https://skelet.atk14.net/api/en/login_availabilities/detail/?login=yuri&format=json",$adf->getUrl());
 
 		$data = $adf->get("login_availabilities/detail",array("login" => "yuri", "lang" => "cs"));
 		$this->assertEquals(array("status" => "available"),$data);
-		$this->assertEquals("http://skelet.atk14.net/api/cs/login_availabilities/detail/?login=yuri&format=json",$adf->getUrl());
+		$this->assertEquals("https://skelet.atk14.net/api/cs/login_availabilities/detail/?login=yuri&format=json",$adf->getUrl());
 
 		// invalid login in the default language (en)
 		$data = $adf->post("logins/create_new",array(
@@ -118,24 +118,24 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals(array("Takový uživatel tady není"),$adf->getErrors());
 
 		// suppressing lang
-		$adf = new ApiDataFetcher("http://skelet.atk14.net/api/",array(
+		$adf = new ApiDataFetcher("https://skelet.atk14.net/api/",array(
 			"logger" => new Logger(),
 			"lang" => "",
 		));
 
 		$data = $adf->get("non_existing_resource/detail",array("id" => "123"),array("acceptable_error_codes" => array(404)));
-		$this->assertEquals("http://skelet.atk14.net/api/non_existing_resource/detail/?id=123&format=json",$adf->getUrl());
+		$this->assertEquals("https://skelet.atk14.net/api/non_existing_resource/detail/?id=123&format=json",$adf->getUrl());
 
 		// leading slash
-		$adf = new ApiDataFetcher("http://skelet.atk14.net/api",array( // slash is missing!
+		$adf = new ApiDataFetcher("https://skelet.atk14.net/api",array( // slash is missing!
 			"logger" => new Logger(),
 		));
 
 		$data = $adf->get("login_availabilities/detail",array("login" => "jean.marais"));
-		$this->assertEquals("http://skelet.atk14.net/api/en/login_availabilities/detail/?login=jean.marais&format=json",$adf->getUrl());
+		$this->assertEquals("https://skelet.atk14.net/api/en/login_availabilities/detail/?login=jean.marais&format=json",$adf->getUrl());
 
 		// parameters in action
-		$adf = new ApiDataFetcher("http://www.atk14.net/api/",array(
+		$adf = new ApiDataFetcher("https://www.atk14.net/api/",array(
 			"logger" => new Logger(),
 		));
 
@@ -154,32 +154,32 @@ class TcApiDataFetcher extends TcBase {
 
 	function test_logger(){
  		// no logger given
-		$adf = new ApiDataFetcher("http://skelet.atk14.net/api/",array("logger" => null));
+		$adf = new ApiDataFetcher("https://skelet.atk14.net/api/",array("logger" => null));
 		$data = $adf->get("login_availabilities/detail",array("login" => "yuri"));
 		$this->assertEquals(array("status" => "available"),$data);
 	
 		// using TestingLogger (see testing_logger.php)
 		$logger = new TestingLogger();
-		$adf = new ApiDataFetcher("http://skelet.atk14.net/api/",array("logger" => $logger));
+		$adf = new ApiDataFetcher("https://skelet.atk14.net/api/",array("logger" => $logger));
 		$this->assertEquals(array(),$logger->messages);
 		$data = $adf->get("login_availabilities/detail",array("login" => "yuri"));
 		$this->assertEquals(array("status" => "available"),$data);
 		//
 		$this->assertEquals(1,sizeof($logger->messages));
-		$this->assertContains('[debug] ApiDataFetcher: GET http://skelet.atk14.net/api/en/login_availabilities/detail/?login=yuri&format=json',$logger->messages[0]);
+		$this->assertContains('[debug] ApiDataFetcher: GET https://skelet.atk14.net/api/en/login_availabilities/detail/?login=yuri&format=json',$logger->messages[0]);
 	}
 
 	function test_getApiUrl(){
-		$adf = new ApiDataFetcher("http://www.atk14.net/api/",array(
+		$adf = new ApiDataFetcher("https://www.atk14.net/api/",array(
 			"logger" => new Logger()
 		));
 
-		$this->assertEquals("http://www.atk14.net/api/",$adf->getApiUrl());
+		$this->assertEquals("https://www.atk14.net/api/",$adf->getApiUrl());
 
 		$data = $adf->get("login_availabilities/detail",array(
 			"login" => "turbo.bug",
 		));
 
-		$this->assertEquals("http://www.atk14.net/api/",$adf->getApiUrl());
+		$this->assertEquals("https://www.atk14.net/api/",$adf->getApiUrl());
 	}
 }
