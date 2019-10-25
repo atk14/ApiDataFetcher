@@ -7,7 +7,7 @@ It should be usable also for other JSON APIs.
 Basic usage
 -----------
 
-    $adf = new ApiDataFetcher("http://skelet.atk14.net/api/");
+    $adf = new ApiDataFetcher("https://skelet.atk14.net/api/");
 
     $data = $adf->get("articles/detail",["id" => 123]);
     // or
@@ -15,7 +15,7 @@ Basic usage
 
     $title = $data["title"];
 
-In fact in this example a HTTP GET request is made on URL http://skelet.atk14.net/api/en/articles/detail/?id=123&format=json and decoded JSON data is returned.
+In fact in this example a HTTP GET request is made on URL https://skelet.atk14.net/api/en/articles/detail/?id=123&format=json and decoded JSON data is returned.
 
 A post request can be made this way:
 
@@ -92,11 +92,11 @@ ApiDataFetcher tries to detect automatically currently used language in the runn
 
 Language can be also specified in the constructor or in the specific API method call.
 
-    $adf = new ApiDataFetcher("http://skelet.atk14.net/api/",["lang" => "en"]);
+    $adf = new ApiDataFetcher("https://skelet.atk14.net/api/",["lang" => "en"]);
 
-    $data_in_english = $adf->get("articles/detail",["id" => 123]); // performs call to http://skelet.atk14.net/api/en/articles/detail/?id=123&format=json
+    $data_in_english = $adf->get("articles/detail",["id" => 123]); // performs call to https://skelet.atk14.net/api/en/articles/detail/?id=123&format=json
 
-    $data_in_czech = $adf->get("articles/detail",["id" => 123],["lang" => "cs"]); // performs call to http://skelet.atk14.net/api/cs/articles/detail/?id=123&format=json
+    $data_in_czech = $adf->get("articles/detail",["id" => 123],["lang" => "cs"]); // performs call to https://skelet.atk14.net/api/cs/articles/detail/?id=123&format=json
 
 On a non-ATK14 API you may want to disable language considering at all.
 
@@ -137,7 +137,7 @@ Use the Composer to install the ApiDataFetcher.
 
 In the project configuration file the constant API_DATA_FETCHER_BASE_URL can be defined.
 
-    define("API_DATA_FETCHER_BASE_URL","http://skelet.atk14.net/api/");
+    define("API_DATA_FETCHER_BASE_URL","https://skelet.atk14.net/api/");
 
 Licence
 -------
