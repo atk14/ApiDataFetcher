@@ -23,7 +23,7 @@ if(!defined("API_DATA_FETCHER_BASE_URL")) {
  */
 class ApiDataFetcher{
 
-	const VERSION = "1.6";
+	const VERSION = "1.8.1";
 
 	var $logger;
 	var $request;
@@ -269,7 +269,8 @@ class ApiDataFetcher{
 			"acceptable_error_codes" => array(),
 			"file" => array(), // see postFile(),
 			"raw_post_data" => null,
-			"additional_headers" => array() // array("X-Forwarded-For: 127.0.0.1","X-Logged-User-Id: 123")
+			"additional_headers" => array(), // array("X-Forwarded-For: 127.0.0.1","X-Logged-User-Id: 123")
+			"return_raw_content" => false, // TODO: at the moment it doesn't work with "cache" parameter
 		);
 
 		$this->errors = array();
@@ -357,33 +358,42 @@ class ApiDataFetcher{
 		// TODO: vyresit zalogovani parametru POSTem
 
 		$content = $u->getContent();
-		if(!strlen($content) && ($this->status_code!=204)){
-			if($options["return_cached_content_on_error"] && $cached_ar){
-				return $this->__useOutdatedCache($cached_ar);
-			}
-			throw new Exception("No content on $url (HTTP $this->status_code)");
-		}
 
-		if(strlen($content)>0){
+		if($options["return_raw_content"]){
 
-			$d = json_decode($content,true);
-			if(is_null($d)){
-				trigger_error("ApiDataFetcher:
-URL: $url
-response code: ".$u->getStatusCode()."
-invalid json:\n".$u->getContent()
-				);
-				if($options["return_cached_content_on_error"] && $cached_ar){
-					return $this->__useOutdatedCache($cached_ar);
-				}
-				throw new Exception("json_decode() failed on $url (HTTP status code: $this->status_code; content: ".$u->getContent().")");
-			}
+			$d = null;
 
 		}else{
 
-			// The $content is empty (HTTP status code is 204).
-			// Empty answer means empty JSON.
-			$d = array();
+			if(!strlen($content) && ($this->status_code!=204)){
+				if($options["return_cached_content_on_error"] && $cached_ar){
+					return $this->__useOutdatedCache($cached_ar);
+				}
+				throw new Exception("No content on $url (HTTP $this->status_code)");
+			}
+
+			if(strlen($content)>0){
+
+				$d = json_decode($content,true);
+				if(is_null($d)){
+					trigger_error("ApiDataFetcher:
+URL: $url
+response code: ".$u->getStatusCode()."
+invalid json:\n".$u->getContent()
+					);
+					if($options["return_cached_content_on_error"] && $cached_ar){
+						return $this->__useOutdatedCache($cached_ar);
+					}
+					throw new Exception("json_decode() failed on $url (HTTP status code: $this->status_code; content: ".(strlen($content)>2000 ? substr($content,0,2000)."..." : $content).")");
+				}
+
+			}else{
+
+				// The $content is empty (HTTP status code is 204).
+				// Empty answer means empty JSON.
+				$d = array();
+
+			}
 
 		}
 
@@ -429,6 +439,9 @@ invalid json:\n".$u->getContent()
 			}
 		}
 
+		if($options["return_raw_content"]){
+			return $content;
+		}
 		return $this->data;
 	}
 
