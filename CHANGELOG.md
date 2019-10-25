@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.8.1] - 2019-10-25
+--------------------
+
+- Using fixed version of UrlFetcher (>=1.4.1)
+
 [1.8] - 2019-10-22
 ------------------
 
