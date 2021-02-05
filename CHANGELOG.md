@@ -3,6 +3,12 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.9] - 2021-02-05
+------------------
+
+- A file to be posted to a URL is passed to UrlFetcher as StringBuffer and not as a string
+- Using fixed version of UrlFetcher (>=1.5)
+
 [1.8.1] - 2019-10-25
 --------------------
 
