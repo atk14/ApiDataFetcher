@@ -328,7 +328,8 @@ class ApiDataFetcher{
 			));
 
 		}elseif($options["file"]){
-			$content = Files::GetFileContent($options["file"]["path"]);
+			$content = new StringBuffer();
+			$content->addFile($options["file"]["path"]);
 			$u->post($content,array(
 				"content_type" => $options["file"]["mime_type"],
 				"additional_headers" => array(
