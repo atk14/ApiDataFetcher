@@ -1,6 +1,8 @@
 ApiDataFetcher
 ==============
 
+[![Build Status](https://travis-ci.com/atk14/ApiDataFetcher.svg?branch=master)](https://travis-ci.com/atk14/ApiDataFetcher)
+
 Client library designed for communication with ATK14 restful API.
 It should be usable also for other JSON APIs.
 
