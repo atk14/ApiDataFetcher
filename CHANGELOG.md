@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.9.2] - 2021-07-13
+--------------------
+
+- Better error message on an unknown hostname
+
 [1.9.1] - 2021-02-07
 --------------------
 
