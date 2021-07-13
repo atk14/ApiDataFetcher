@@ -183,7 +183,22 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals("https://www.atk14.net/api/",$adf->getApiUrl());
 	}
 
-	function test_unknown_host(){
+	function test_error_not_found(){
+		$adf = new ApiDataFetcher("https://www.atk14.net/api/");
+
+		$exception_msg = "";
+
+		try {
+			$data = $adf->get("nonsence/nonsence");
+		} catch(Exception $e) {
+			$exception_msg = $e->getMessage();
+		}
+
+		$this->assertTrue(!isset($data));
+		$this->assertEquals("HTTP status code 404 (Nothing has been found on this address), url: https://www.atk14.net/api/en/nonsence/nonsence/?format=json",$exception_msg);
+	}
+
+	function test_error_unknown_host(){
 		$adf = new ApiDataFetcher("https://www.nonsence-nonsence-nonsence-nonsence.com/api/");
 
 		$exception_msg = "";
