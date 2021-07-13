@@ -182,4 +182,21 @@ class TcApiDataFetcher extends TcBase {
 
 		$this->assertEquals("https://www.atk14.net/api/",$adf->getApiUrl());
 	}
+
+	function test_unknown_host(){
+		$adf = new ApiDataFetcher("https://www.nonsence-nonsence-nonsence-nonsence.com/api/");
+
+		$exception_msg = "";
+
+		set_error_handler(function() { /* ignore errors */ });
+		try {
+			$data = $adf->get("articles/index");
+		} catch(Exception $e) {
+			$exception_msg = $e->getMessage();
+		}
+		restore_error_handler();
+
+		$this->assertTrue(!isset($data));
+		$this->assertEquals("No content on https://www.nonsence-nonsence-nonsence-nonsence.com/api/en/articles/index/?format=json (failed to open socket: could not resolve host: www.nonsence-nonsence-nonsence-nonsence.com (php_network_getaddresses: getaddrinfo failed: Name or service not known) [0])",$exception_msg);
+	}
 }

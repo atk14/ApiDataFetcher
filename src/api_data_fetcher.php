@@ -370,7 +370,10 @@ class ApiDataFetcher{
 				if($options["return_cached_content_on_error"] && $cached_ar){
 					return $this->__useOutdatedCache($cached_ar);
 				}
-				throw new Exception("No content on $url (HTTP $this->status_code)");
+				$_err_notes = array();
+				if($this->status_code){ $_err_notes[] = "HTTP $this->status_code"; }
+				if(strlen($u->getErrorMessage())){ $_err_notes[] = $u->getErrorMessage(); }
+				throw new Exception("No content on $url (".join(";",$_err_notes).")");
 			}
 
 			if(strlen($content)>0){
