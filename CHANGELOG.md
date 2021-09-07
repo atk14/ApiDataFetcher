@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.9.3] - 2021-09-07
+--------------------
+
+- HTML Markup in Tracy Panel fixed
+
 [1.9.2] - 2021-07-13
 --------------------
 
