@@ -22,7 +22,7 @@ class ApiDataFetcherPanel implements Tracy\IBarPanel{
 
 	function getPanel(){
 		$out = array();
-		$out[] = '<div style="height: 500px; width: 800px; overflow:scroll;">';
+		$out[] = '<div style="overflow: scroll;">';
 		$out[] = "<code>";
 		$out[] = $this->api_data_fetcher->getStatistics();
 		$out[] = "</code>";
