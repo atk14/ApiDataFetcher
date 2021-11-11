@@ -311,6 +311,105 @@ class ApiDataFetcher{
 		$timer = new StopWatch();
 		$timer->start();
 
+		list($content,$status_code,$status_message,$error_message) = $this->__doHttpRequest($url,$params,$options);
+
+		$timer->stop();
+		$this->duration = $timer->getResult();
+
+		$this->status_code = $status_code;
+
+		// TODO: vyresit zalogovani parametru POSTem
+
+		if($options["return_raw_content"]){
+
+			$d = null;
+
+		}else{
+
+			if(!strlen($content) && ($this->status_code!=204)){
+				if($options["return_cached_content_on_error"] && $cached_ar){
+					return $this->__useOutdatedCache($cached_ar);
+				}
+				$_err_notes = array();
+				if($this->status_code){ $_err_notes[] = "HTTP $status_code $status_message"; }
+				if(strlen($error_message)){ $_err_notes[] = $error_message; }
+				throw new Exception("No content on $url (".join(";",$_err_notes).")");
+			}
+
+			if(strlen($content)>0){
+
+				$d = json_decode($content,true);
+				if(is_null($d)){
+					trigger_error("ApiDataFetcher:
+URL: $url
+response code: ".$status_code."
+invalid json:\n".$content
+					);
+					if($options["return_cached_content_on_error"] && $cached_ar){
+						return $this->__useOutdatedCache($cached_ar);
+					}
+					throw new Exception("json_decode() failed on $url (HTTP status code: $this->status_code; content: ".(strlen($content)>2000 ? substr($content,0,2000)."..." : $content).")");
+				}
+
+			}else{
+
+				// The $content is empty (HTTP status code is 204).
+				// Empty answer means empty JSON.
+				$d = array();
+
+			}
+
+		}
+
+		ApiDataFetcher::$QueriesExecuted[] = array(
+			"action" => $action,
+			"action_url" => $action_url,
+			"method" => $options["method"],
+			"url" => $url,
+			"status_code" => $status_code,
+			"status_message" => $status_message,
+			"params" => $params,
+			"duration" => $this->duration,
+			"data" => $d,
+		);
+
+		if(preg_match('/^2/',$this->status_code)){
+			$this->data = $d;
+			$valid_response = true;
+		}else{
+			$this->errors = $d;
+			$valid_response = false;
+		}
+
+		if(!$valid_response && !in_array($this->status_code,$options["acceptable_error_codes"])){
+			$this->_loggerLog(
+				"ApiDataFetcher: $options[method] $url (HTTP $this->status_code, $timer)\n".
+				($options["method"] == "POST" ? "params: ".print_r($params,true)."\n" : "").
+				"error: ".join(" | ",$this->errors)."\n".
+				"requested URL: ".$this->request->getUrl()
+			);
+			$this->_loggerFlush();
+			if($options["return_cached_content_on_error"] && $cached_ar){
+				return $this->__useOutdatedCache($cached_ar);
+			}
+			throw new Exception("HTTP status code $this->status_code (".join(" | ",$this->errors)."), url: $url");
+		}else{
+			$this->_loggerDebug(
+				"ApiDataFetcher: $options[method] $url (HTTP $this->status_code, $timer)".
+				($options["method"] == "POST" ? "\nparams: ".print_r($params,true)."\n" : "")
+			);
+			if($options["cache"]>0){
+				$this->_writeCache($url,$this->status_code,$this->data,$this->errors);
+			}
+		}
+
+		if($options["return_raw_content"]){
+			return $content;
+		}
+		return $this->data;
+	}
+
+	function __doHttpRequest($url,$params,$options){
 		// Pro stahovani dat se pouziva UrlFetcher - soucast ATK14
 		$headers = $this->additional_headers;
 		//if($options["file"]){
@@ -349,100 +448,11 @@ class ApiDataFetcher{
 			));
 		}
 		$content = $u->getContent();
-		$this->status_code = $u->getStatusCode();
+		$status_code = $u->getStatusCode();
+		$status_message = $u->getStatusMessage();
+		$error_message = $u->getErrorMessage();
 
-		$timer->stop();
-		$this->duration = $timer->getResult();
-
-		// TODO: vyresit zalogovani parametru POSTem
-
-		if($options["return_raw_content"]){
-
-			$d = null;
-
-		}else{
-
-			if(!strlen($content) && ($this->status_code!=204)){
-				if($options["return_cached_content_on_error"] && $cached_ar){
-					return $this->__useOutdatedCache($cached_ar);
-				}
-				$_err_notes = array();
-				if($this->status_code){ $_err_notes[] = "HTTP $this->status_code"; }
-				if(strlen($u->getErrorMessage())){ $_err_notes[] = $u->getErrorMessage(); }
-				throw new Exception("No content on $url (".join(";",$_err_notes).")");
-			}
-
-			if(strlen($content)>0){
-
-				$d = json_decode($content,true);
-				if(is_null($d)){
-					trigger_error("ApiDataFetcher:
-URL: $url
-response code: ".$u->getStatusCode()."
-invalid json:\n".$u->getContent()
-					);
-					if($options["return_cached_content_on_error"] && $cached_ar){
-						return $this->__useOutdatedCache($cached_ar);
-					}
-					throw new Exception("json_decode() failed on $url (HTTP status code: $this->status_code; content: ".(strlen($content)>2000 ? substr($content,0,2000)."..." : $content).")");
-				}
-
-			}else{
-
-				// The $content is empty (HTTP status code is 204).
-				// Empty answer means empty JSON.
-				$d = array();
-
-			}
-
-		}
-
-		ApiDataFetcher::$QueriesExecuted[] = array(
-			"action" => $action,
-			"action_url" => $action_url,
-			"method" => $options["method"],
-			"url" => $url,
-			"status_code" => $this->status_code,
-			"status_message" => $u->getStatusMessage(),
-			"params" => $params,
-			"duration" => $timer->getResult(),
-			"data" => $d,
-		);
-
-		if(preg_match('/^2/',$this->status_code)){
-			$this->data = $d;
-			$valid_response = true;
-		}else{
-			$this->errors = $d;
-			$valid_response = false;
-		}
-
-		if(!$valid_response && !in_array($this->status_code,$options["acceptable_error_codes"])){
-			$this->_loggerLog(
-				"ApiDataFetcher: $options[method] $url (HTTP $this->status_code, $timer)\n".
-				($options["method"] == "POST" ? "params: ".print_r($params,true)."\n" : "").
-				"error: ".join(" | ",$this->errors)."\n".
-				"requested URL: ".$this->request->getUrl()
-			);
-			$this->_loggerFlush();
-			if($options["return_cached_content_on_error"] && $cached_ar){
-				return $this->__useOutdatedCache($cached_ar);
-			}
-			throw new Exception("HTTP status code $this->status_code (".join(" | ",$this->errors)."), url: $url");
-		}else{
-			$this->_loggerDebug(
-				"ApiDataFetcher: $options[method] $url (HTTP $this->status_code, $timer)".
-				($options["method"] == "POST" ? "\nparams: ".print_r($params,true)."\n" : "")
-			);
-			if($options["cache"]>0){
-				$this->_writeCache($url,$this->status_code,$this->data,$this->errors);
-			}
-		}
-
-		if($options["return_raw_content"]){
-			return $content;
-		}
-		return $this->data;
+		return array($content,$status_code,$status_message,$error_message);
 	}
 
 	function __setCacheAndReturnData($ar){
