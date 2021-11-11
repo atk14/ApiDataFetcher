@@ -15,10 +15,12 @@ class TcEmptyOutput extends TcBase {
 		$this->assertTrue($exception_thrown);
 		$this->assertEquals("No content on http://www.atk14.net/api/en/echoes/detail/?response=&status_code=200&format=json (HTTP 200 OK)",$exception_message);
 		$this->assertEquals(200,$apf->getStatusCode());
+		$this->assertEquals("OK",$apf->getStatusMessage());
 
 		// Empty output is allowed when status code is 204 (No Content)
 		$data = $apf->get("echoes/detail",["response" => "", "status_code" => 204]);
 		$this->assertEquals(204,$apf->getStatusCode());
+		$this->assertEquals("No Content",$apf->getStatusMessage());
 		$this->assertEquals(array(),$data);
 	}
 }

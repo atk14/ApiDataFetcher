@@ -14,6 +14,7 @@ class TcApiDataFetcher extends TcBase {
 			"login" => $login,
 		));
 		$this->assertEquals(200,$adf->getStatusCode());
+		$this->assertEquals("OK",$adf->getStatusMessage());
 		$this->assertEquals(array("status" => "available"),$data);
 		$this->assertEquals("GET",$adf->getMethod());
 		$this->assertEquals("https://www.atk14.net/api/en/login_availabilities/detail/?login=$login&format=json",$adf->getUrl());
@@ -31,6 +32,7 @@ class TcApiDataFetcher extends TcBase {
 		));
 
 		$this->assertEquals(201,$adf->getStatusCode());
+		$this->assertEquals("Created",$adf->getStatusMessage());
 		$this->assertEquals("POST",$adf->getMethod());
 		$this->assertEquals("https://www.atk14.net/api/en/users/create_new/",$adf->getUrl());
 
@@ -56,6 +58,7 @@ class TcApiDataFetcher extends TcBase {
 			"password" => "badTRY"
 		),$options);
 		$this->assertEquals(404,$adf->getStatusCode());
+		$this->assertEquals("Not Found",$adf->getStatusMessage());
 		$this->assertNull($data);
 
 		$data = $adf->post("logins/create_new",array(
@@ -63,6 +66,7 @@ class TcApiDataFetcher extends TcBase {
 			"password" => "badTRY"
 		),$options);
 		$this->assertEquals(401,$adf->getStatusCode());
+		$this->assertEquals("Unauthorized",$adf->getStatusMessage());
 		$this->assertNull($data);
 
 		$data = $adf->post("logins/create_new",array(
