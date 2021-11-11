@@ -276,9 +276,6 @@ class ApiDataFetcher{
 		$this->errors = array();
 		$this->data = null;
 
-		$timer = new StopWatch();
-		$timer->start();
-
 		$lang = $params["lang"];
 		unset($params["lang"]);
 
@@ -310,6 +307,9 @@ class ApiDataFetcher{
 		if($options["cache"]>0 && ($ar = $this->_readCache($url,$options["cache"],$cached_ar))){
 			return $this->__setCacheAndReturnData($ar);
 		}
+
+		$timer = new StopWatch();
+		$timer->start();
 
 		// Pro stahovani dat se pouziva UrlFetcher - soucast ATK14
 		$headers = $this->additional_headers;
@@ -348,17 +348,13 @@ class ApiDataFetcher{
 				"request_method" => $options["method"],
 			));
 		}
+		$content = $u->getContent();
 		$this->status_code = $u->getStatusCode();
 
 		$timer->stop();
-
 		$this->duration = $timer->getResult();
 
-		$this->status_code = $u->getStatusCode();
-
 		// TODO: vyresit zalogovani parametru POSTem
-
-		$content = $u->getContent();
 
 		if($options["return_raw_content"]){
 
