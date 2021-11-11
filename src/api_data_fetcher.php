@@ -535,6 +535,7 @@ invalid json:\n".$content
 			"data" => $data,
 			"errors" => $errors,
 			"created" => time(),
+			"version" => self::VERSION,
 		);
 		$this->cache_storage->write($url,$value);
 		$this->_loggerDebug("writing cache");
@@ -542,6 +543,11 @@ invalid json:\n".$content
 
 	function _readCache($url,$max_age,&$ar){
 		if($ar = $this->cache_storage->read($url)){
+			if(!isset($ar["version"]) || $ar["version"]!==self::VERSION){
+				$this->_loggerDebug("ApiDataFetcher VERSION mismatch in cache file: $url");
+				$ar = null;
+				return;
+			}
 			if($ar["created"]>=time()-$max_age){
 				$this->_loggerDebug("loaded from cache: $url");
 				return $ar;
