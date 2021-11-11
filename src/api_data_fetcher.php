@@ -497,11 +497,18 @@ invalid json:\n".$content
 
 	/**
 	 * Returns HTTP status code of the last request
+	 *
+	 *	echo $apf->getStatusCode(); // e.g. 200, 201, 404...
 	 */
 	function getStatusCode(){
 		return $this->status_code;
 	}
 
+	/**
+	 * Returns HTTP status message of the last request
+	 *
+	 *	echo $apf->getStatusMessage(); // e.g. "OK", "Found", "Created"...
+	 */
 	function getStatusMessage(){
 		return $this->status_message;
 	}
