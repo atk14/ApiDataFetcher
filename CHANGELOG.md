@@ -3,6 +3,12 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.9.4] - 2021-11-11
+--------------------
+
+- 2b79bc7 - Version is being written into cache files
+- ec22211 - Added method ApiDataFetcher::getStatusMessage()
+
 [1.9.3] - 2021-09-07
 --------------------
 
