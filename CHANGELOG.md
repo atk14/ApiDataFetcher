@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.10] - 2021-12-03
+-------------------
+
+* 8f5e289 - Added possibility to communicate via command instead of network socket (e.g. scripts/simulate_http_request in an ATK14 project)
+
 [1.9.4] - 2021-11-11
 --------------------
 
