@@ -40,6 +40,8 @@ class ApiDataFetcher{
 	var $automatically_add_leading_slash;
 	var $automatically_add_trailing_slash;
 
+	var $communicate_via_command;
+
 	var $url;
 	var $method;
 	var $duration;
@@ -84,6 +86,8 @@ class ApiDataFetcher{
 			"additional_headers" => array(), // array("X-Forwarded-For: 127.0.0.1","X-Logged-User-Id: 123")
 			"automatically_add_leading_slash" => true,
 			"automatically_add_trailing_slash" => true,
+
+			"communicate_via_command" => null, // path to a command
 		);
 
 		if(is_null($options["logger"])){
@@ -111,6 +115,7 @@ class ApiDataFetcher{
 		$this->additional_headers = $options["additional_headers"];
 		$this->automatically_add_leading_slash = $options["automatically_add_leading_slash"];
 		$this->automatically_add_trailing_slash = $options["automatically_add_trailing_slash"];
+		$this->communicate_via_command = $options["communicate_via_command"];
 	}
 
 	/**
@@ -417,10 +422,17 @@ invalid json:\n".$content
 		//if($options["file"]){
 		//	$headers["X-FileName"] = $options["name"];
 		//}
-		$u = new UrlFetcher($url,array(
-			"user_agent" => $this->user_agent,
-			"additional_headers" => $headers
-		));
+		if($this->communicate_via_command){
+			$u = new UrlFetcherViaCommand($this->communicate_via_command,$url,array(
+				"user_agent" => $this->user_agent,
+				"additional_headers" => $headers
+			));
+		}else{
+			$u = new UrlFetcher($url,array(
+				"user_agent" => $this->user_agent,
+				"additional_headers" => $headers
+			));
+		}
 
 		if(!is_null($options["raw_post_data"])){
 			$u->post($options["raw_post_data"],array(
