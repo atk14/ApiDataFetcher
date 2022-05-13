@@ -529,7 +529,7 @@ invalid json:\n".$content
 		$out = array();
 		foreach($params as $key => $value){
 			if(is_object($value)){ $value = $value->getId(); }
-			$out[] = urlencode($key)."=".urlencode($value);
+			$out[] = urlencode((string)$key)."=".urlencode((string)$value);
 		}
 		return join("&",$out);
 	}
