@@ -3,6 +3,12 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.10.1] - 2022-05-13
+---------------------
+
+* d05d170 - PHP 8.1 compatibility
+
+
 [1.10] - 2021-12-03
 -------------------
 
