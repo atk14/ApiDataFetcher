@@ -216,6 +216,9 @@ class TcApiDataFetcher extends TcBase {
 		restore_error_handler();
 
 		$this->assertTrue(!isset($data));
-		$this->assertEquals("No content on https://www.nonsence-nonsence-nonsence-nonsence.com/api/en/articles/index/?format=json (failed to open socket: could not resolve host: www.nonsence-nonsence-nonsence-nonsence.com (php_network_getaddresses: getaddrinfo failed: Name or service not known) [0])",$exception_msg);
+		
+		// No content on https://www.nonsence-nonsence-nonsence-nonsence.com/api/en/articles/index/?format=json (failed to open socket: could not resolve host: www.nonsence-nonsence-nonsence-nonsence.com (php_network_getaddresses: getaddrinfo failed: Name or service not known) [0])
+		// No content on https://www.nonsence-nonsence-nonsence-nonsence.com/api/en/articles/index/?format=json (failed to open socket: php_network_getaddresses: getaddrinfo for www.nonsence-nonsence-nonsence-nonsence.com failed: Name or service not known [0])
+		$this->assertContains("No content on https://www.nonsence-nonsence-nonsence-nonsence.com/api/en/articles/index/?format=json (failed to open socket:",$exception_msg);
 	}
 }
