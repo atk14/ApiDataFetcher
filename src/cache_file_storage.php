@@ -27,6 +27,7 @@ class CacheFileStorage{
 		//echo "gonna to save:\n";
 		//var_dump($data);
 		Files::Mkdir($dir = $TEMP . "/cache_file_storage/");
-		Files::WriteToFile("$dir$key",$content);
+		$tmp_file = Files::WriteToTemp($content);
+		Files::MoveFile($tmp_file,"$dir$key");
 	}
 }
