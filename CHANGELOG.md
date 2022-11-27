@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.10.2] - 2022-11-27
+---------------------
+
+* 0a48913 - Writing to cache file fixed
+
 [1.10.1] - 2022-05-13
 ---------------------
 
