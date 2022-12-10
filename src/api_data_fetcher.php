@@ -535,6 +535,9 @@ invalid json:\n".$content
 	}
 
 	protected function _addParamsToUrl($url,$params){
+		if(!sizeof($params)){
+			return $url;
+		}
 		$connector = preg_match('/\?/',$url) ? "&" : "?";
 		return $url.$connector.$this->_joinParams($params);
 	}
