@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.10.3] - 2022-12-10
+---------------------
+
+* 83166f9 - Adding no param to the URL fixed
+
 [1.10.2] - 2022-11-27
 ---------------------
 
