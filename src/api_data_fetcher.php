@@ -40,6 +40,8 @@ class ApiDataFetcher{
 	var $automatically_add_leading_slash;
 	var $automatically_add_trailing_slash;
 
+	var $proxy;
+
 	var $communicate_via_command;
 
 	var $url;
@@ -87,6 +89,7 @@ class ApiDataFetcher{
 			"automatically_add_leading_slash" => true,
 			"automatically_add_trailing_slash" => true,
 
+			"proxy" => "", // e.g. "tcp://192.168.1.1:8118"
 			"communicate_via_command" => null, // path to a command
 		);
 
@@ -115,6 +118,7 @@ class ApiDataFetcher{
 		$this->additional_headers = $options["additional_headers"];
 		$this->automatically_add_leading_slash = $options["automatically_add_leading_slash"];
 		$this->automatically_add_trailing_slash = $options["automatically_add_trailing_slash"];
+		$this->proxy = $options["proxy"];
 		$this->communicate_via_command = $options["communicate_via_command"];
 	}
 
@@ -430,7 +434,8 @@ invalid json:\n".$content
 		}else{
 			$u = new UrlFetcher($url,array(
 				"user_agent" => $this->user_agent,
-				"additional_headers" => $headers
+				"additional_headers" => $headers,
+				"proxy" => $this->proxy,
 			));
 		}
 

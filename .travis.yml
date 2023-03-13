@@ -26,6 +26,8 @@ jobs:
       dist: focal
 
 before_install:
+  - sudo apt-get install privoxy
+  - sudo /etc/init.d/privoxy start
   - composer update --dev
 
 script:
