@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.10.4] - 2023-03-13
+---------------------
+
+* 1ecaeed - ApiDataFetcher can communicate through a proxy server
+
 [1.10.3] - 2022-12-10
 ---------------------
 
