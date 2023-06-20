@@ -450,9 +450,16 @@ invalid json:\n".$content
 			$headers[] = $h;
 		}
 
-		//if($options["file"]){
-		//	$headers["X-FileName"] = $options["name"];
-		//}
+		// Clean-up duplicit headers
+		$_headers = array();
+		foreach($headers as $h){
+			$k = sizeof($_headers);
+			if(preg_match('/^([^:]+):/',$h,$matches)){
+				$k = strtolower($matches[1]);
+			}
+			$_headers[$k] = $h;
+		}
+		$headers = array_values($_headers);
 
 		if($this->communicate_via_command){
 			$u = new UrlFetcherViaCommand($this->communicate_via_command,$url,array(
