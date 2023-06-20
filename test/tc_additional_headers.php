@@ -27,18 +27,19 @@ class TcAdditionalHeaders extends TcBase {
 		$h = array_pop($headers);
 		$this->assertEquals(array("name" => "Accept", "value" => "application/xhtml+xml"),$h);
 
-		// The same headers must be deduplicated
+		// The same headers must be deduplicated.
+		// The last header occurence is preferred.
 		$adf = new ApiDataFetcher("https://www.atk14.net/api/",array(
-			"additional_headers" => array("Accept: application/json, text/csv", "X-Test: Yes", "x-header: xxx"),
+			"additional_headers" => array("Accept: application/json, text/csv", "X-Test: TEST_1", "x-header: Value_1","x-test: TEST_2"),
 		));
-		$data = $adf->get("http_requests/detail",array(),array("additional_headers" => array("X-Header: X-Value", "x-test: YES!!!")));
+		$data = $adf->get("http_requests/detail",array(),array("additional_headers" => array("X-Header: Value_2", "x-test: TEST_3")));
 		$headers = $data["headers"];
 		//
 		$h = array_pop($headers);
-		$this->assertEquals(array("name" => "X-Header", "value" => "X-Value"),$h);
+		$this->assertEquals(array("name" => "X-Header", "value" => "Value_2"),$h);
 		//
 		$h = array_pop($headers);
-		$this->assertEquals(array("name" => "x-test", "value" => "YES!!!"),$h);
+		$this->assertEquals(array("name" => "x-test", "value" => "TEST_3"),$h);
 		//
 		$h = array_pop($headers);
 		$this->assertEquals(array("name" => "Accept", "value" => "application/json, text/csv"),$h);
