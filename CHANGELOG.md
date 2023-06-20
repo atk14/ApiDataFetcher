@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.10.5] - 2023-06-20
+---------------------
+
+* Better serialization of error messages
+
 [1.10.4] - 2023-03-13
 ---------------------
 
