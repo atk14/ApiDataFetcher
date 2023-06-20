@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.10.6] - 2023-06-20
+---------------------
+
+* Additional headers can be also specified when callng methods like get(), post(), put()... 
+
 [1.10.5] - 2023-06-20
 ---------------------
 
