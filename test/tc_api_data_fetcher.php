@@ -228,5 +228,7 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals("Error 1 | Error 2",$adf->_serializeErrorMessages(array("Error 1", "Error 2")));
 		$this->assertEquals("e1: Error 1 | e2: Error 2",$adf->_serializeErrorMessages(array("e1" => "Error 1", "e2" => "Error 2")));
 		$this->assertEquals("e1: Error 1 | e2: Error 2 | e_complex: [ Complex error 1 | Complex error 2 ]",$adf->_serializeErrorMessages(array("e1" => "Error 1", "e2" => "Error 2", "e_complex" => array("Complex error 1", "Complex error 2") )));
+
+		$this->assertEquals("false: FALSE | true: TRUE | null: NULL",$adf->_serializeErrorMessages(array("false" => FALSE, "true" => TRUE, "null" => null)));
 	}
 }

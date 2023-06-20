@@ -422,6 +422,8 @@ invalid json:\n".$content
 
 	function _serializeErrorMessages($errors,$array_leading_seq = "",$array_trailing_seq = ""){
 		if(!is_array($errors)){
+			if(is_null($errors)){ return "NULL"; }
+			if(is_bool($errors)){ return $errors ? "TRUE" : "FALSE"; }
 			return "$errors";
 		}
 		$out = array();
