@@ -437,11 +437,23 @@ invalid json:\n".$content
 	}
 
 	function __doHttpRequest($url,$params,$options){
-		// Pro stahovani dat se pouziva UrlFetcher - soucast ATK14
+		$options += array(
+			"additional_headers" => array(),
+		);
+
+		// "X-Forwarded-For: office.snapps.eu" -> array("X-Forwarded-For: office.snapps.eu")
+		if(!is_array($options["additional_headers"])){
+			$options["additional_headers"] = $options["additional_headers"] ? array($options["additional_headers"]) : array();
+		}
 		$headers = $this->additional_headers;
+		foreach($options["additional_headers"] as $h){
+			$headers[] = $h;
+		}
+
 		//if($options["file"]){
 		//	$headers["X-FileName"] = $options["name"];
 		//}
+
 		if($this->communicate_via_command){
 			$u = new UrlFetcherViaCommand($this->communicate_via_command,$url,array(
 				"user_agent" => $this->user_agent,
