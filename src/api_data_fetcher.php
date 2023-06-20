@@ -477,7 +477,6 @@ invalid json:\n".$content
 		if(!is_null($options["raw_post_data"])){
 			$u->post($options["raw_post_data"],array(
 				"content_type" => $options["mime_type"],
-				"additional_headers" => $options["additional_headers"],
 			));
 
 		}elseif($options["file"]){
