@@ -396,14 +396,14 @@ invalid json:\n".$content
 			$this->_loggerLog(
 				"ApiDataFetcher: $options[method] $url (HTTP $this->status_code, $timer)\n".
 				($options["method"] == "POST" ? "params: ".print_r($params,true)."\n" : "").
-				"error: ".join(" | ",$this->errors)."\n".
+				"error: ".$this->_serializeErrorMessages($this->errors)."\n".
 				"requested URL: ".$this->request->getUrl()
 			);
 			$this->_loggerFlush();
 			if($options["return_cached_content_on_error"] && $cached_ar){
 				return $this->__useOutdatedCache($cached_ar);
 			}
-			throw new Exception("HTTP status code $this->status_code (".join(" | ",$this->errors)."), url: $url");
+			throw new Exception("HTTP status code $this->status_code (".$this->_serializeErrorMessages($this->errors)."), url: $url");
 		}else{
 			$this->_loggerDebug(
 				"ApiDataFetcher: $options[method] $url (HTTP $this->status_code, $timer)".
@@ -418,6 +418,20 @@ invalid json:\n".$content
 			return $content;
 		}
 		return $this->data;
+	}
+
+	function _serializeErrorMessages($errors,$array_leading_seq = "",$array_trailing_seq = ""){
+		if(!is_array($errors)){
+			return "$errors";
+		}
+		$out = array();
+		$index = 0;
+		foreach($errors as $k => $er){
+			$_key = "$k"==="$index" ? "" : "$k: ";
+			$out[] = $_key.$this->_serializeErrorMessages($er,"[ "," ]");
+			$index++;
+		}
+		return $array_leading_seq.join(" | ",$out).$array_trailing_seq;
 	}
 
 	function __doHttpRequest($url,$params,$options){

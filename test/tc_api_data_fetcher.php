@@ -221,4 +221,12 @@ class TcApiDataFetcher extends TcBase {
 		// No content on https://www.nonsence-nonsence-nonsence-nonsence.com/api/en/articles/index/?format=json (failed to open socket: php_network_getaddresses: getaddrinfo for www.nonsence-nonsence-nonsence-nonsence.com failed: Name or service not known [0])
 		$this->assertContains("No content on https://www.nonsence-nonsence-nonsence-nonsence.com/api/en/articles/index/?format=json (failed to open socket:",$exception_msg);
 	}
+
+	function test__serializeErrorMessages(){
+		$adf = new ApiDataFetcher("https://www.atk14.net/api/");
+
+		$this->assertEquals("Error 1 | Error 2",$adf->_serializeErrorMessages(array("Error 1", "Error 2")));
+		$this->assertEquals("e1: Error 1 | e2: Error 2",$adf->_serializeErrorMessages(array("e1" => "Error 1", "e2" => "Error 2")));
+		$this->assertEquals("e1: Error 1 | e2: Error 2 | e_complex: [ Complex error 1 | Complex error 2 ]",$adf->_serializeErrorMessages(array("e1" => "Error 1", "e2" => "Error 2", "e_complex" => array("Complex error 1", "Complex error 2") )));
+	}
 }
