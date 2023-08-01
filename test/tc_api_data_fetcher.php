@@ -231,4 +231,15 @@ class TcApiDataFetcher extends TcBase {
 
 		$this->assertEquals("false: FALSE | true: TRUE | null: NULL",$adf->_serializeErrorMessages(array("false" => FALSE, "true" => TRUE, "null" => null)));
 	}
+
+	function test_setSocketTimeout(){
+		$adf = new ApiDataFetcher("https://www.atk14.net/api/",array("socket_timeout" => 2.0));
+
+		$current_timeout = $adf->setSocketTimeout(10.0);
+		$this->assertEquals(2.0,$current_timeout);
+
+		$current_timeout = $adf->setSocketTimeout(5.0);
+		$this->assertEquals(10.0,$current_timeout);
+
+	}
 }

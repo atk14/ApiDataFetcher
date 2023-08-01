@@ -48,6 +48,8 @@ class ApiDataFetcher{
 	var $method;
 	var $duration;
 
+	protected $socket_timeout;
+
 	protected static $QueriesExecuted = array();
 
 	/**
@@ -91,6 +93,8 @@ class ApiDataFetcher{
 
 			"proxy" => "", // e.g. "tcp://192.168.1.1:8118"
 			"communicate_via_command" => null, // path to a command
+
+			"socket_timeout" => 5.0,
 		);
 
 		if(is_null($options["logger"])){
@@ -120,6 +124,7 @@ class ApiDataFetcher{
 		$this->automatically_add_trailing_slash = $options["automatically_add_trailing_slash"];
 		$this->proxy = $options["proxy"];
 		$this->communicate_via_command = $options["communicate_via_command"];
+		$this->socket_timeout = $options["socket_timeout"];
 	}
 
 	/**
@@ -263,6 +268,16 @@ class ApiDataFetcher{
 		return $this->postRawData($action,$json,$params,$options);
 	}
 
+	/**
+	 * Set timeout for HTTP connection
+	 *
+	 * @param float $timeout timeout in seconds
+	 */
+	function setSocketTimeout($timeout){
+		$current_socket_timeout = $this->socket_timeout;
+		$this->socket_timeout = $timeout;
+		return $current_socket_timeout;
+	}
 
 	/**
 	 *	$this->_doRequest("products/detail",array("catalog_id" => "1234/3345566"));
@@ -473,6 +488,8 @@ invalid json:\n".$content
 				"proxy" => $this->proxy,
 			));
 		}
+
+		$u->setSocketTimeout($this->socket_timeout);
 
 		if(!is_null($options["raw_post_data"])){
 			$u->post($options["raw_post_data"],array(
