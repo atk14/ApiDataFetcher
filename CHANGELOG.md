@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.10.8] - 2023-08-01
+---------------------
+
+* d886b7b - Required atk14/url-fetcher ">=1.8.3 <2.0"
+
 [1.10.7] - 2023-08-01
 ---------------------
 
