@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.10.7] - 2023-08-01
+---------------------
+
+* 6bbad4a - Added method ApiDataFetcher::setSocketTimeout()
+
 [1.10.6] - 2023-06-20
 ---------------------
 
