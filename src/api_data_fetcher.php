@@ -25,29 +25,29 @@ class ApiDataFetcher{
 
 	const VERSION = "1.10.9";
 
-	var $logger;
-	var $request;
-	var $response;
-	var $default_params;
-	var $lang;
-	var $base_url;
+	protected $logger;
+	protected $request;
+	protected $response;
+	protected $default_params;
+	protected $lang;
+	protected $base_url;
 
-	var $errors;
-	var $status_code;
-	var $status_message;
-	var $raw_response;
-	var $user_agent;
-	var $additional_headers;
-	var $automatically_add_leading_slash;
-	var $automatically_add_trailing_slash;
+	protected $errors;
+	protected $status_code;
+	protected $status_message;
+	protected $raw_response;
+	protected $user_agent;
+	protected $additional_headers;
+	protected $automatically_add_leading_slash;
+	protected $automatically_add_trailing_slash;
 
-	var $proxy;
+	protected $proxy;
 
-	var $communicate_via_command;
+	protected $communicate_via_command;
 
-	var $url;
-	var $method;
-	var $duration;
+	protected $url;
+	protected $method;
+	protected $duration;
 
 	protected $socket_timeout;
 
