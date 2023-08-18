@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.10.10] - 2023-08-18
+----------------------
+
+* e21a898 - All class members are set to protected
+
 [1.10.9] - 2023-08-18
 ---------------------
 
