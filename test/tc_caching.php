@@ -6,6 +6,7 @@ class TcCaching extends TcBase {
 		$data1 = $apf->get("timezone/Europe/Prague",array(),array("cache" => 60));
 		$this->assertEquals(200,$apf->getStatusCode());
 		$this->assertEquals("OK",$apf->getStatusMessage());
+		$raw_response = $apf->getRawResponse();
 
 		sleep(2);
 
@@ -13,10 +14,12 @@ class TcCaching extends TcBase {
 		$data2 = $apf->get("timezone/Europe/Prague",array(),array("cache" => 60));
 		$this->assertEquals(200,$apf->getStatusCode());
 		$this->assertEquals("OK",$apf->getStatusMessage());
+		$this->assertEquals($raw_response,$apf->getRawResponse());
 
 		$data3 = $apf->get("timezone/Europe/Prague",array());
 		$this->assertEquals(200,$apf->getStatusCode());
 		$this->assertEquals("OK",$apf->getStatusMessage());
+		$this->assertNotEquals($raw_response,$apf->getRawResponse());
 		
 		$this->assertTrue($data1["unixtime"]>0);
 		$this->assertEquals($data1["unixtime"],$data2["unixtime"]);

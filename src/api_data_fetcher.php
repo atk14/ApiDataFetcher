@@ -35,6 +35,7 @@ class ApiDataFetcher{
 	var $errors;
 	var $status_code;
 	var $status_message;
+	var $raw_response;
 	var $user_agent;
 	var $additional_headers;
 	var $automatically_add_leading_slash;
@@ -343,6 +344,7 @@ class ApiDataFetcher{
 
 		$this->status_code = $status_code;
 		$this->status_message = $status_message;
+		$this->raw_response = (string)$content;
 
 		// TODO: vyresit zalogovani parametru POSTem
 
@@ -425,7 +427,7 @@ invalid json:\n".$content
 				($options["method"] == "POST" ? "\nparams: ".print_r($params,true)."\n" : "")
 			);
 			if($options["cache"]>0){
-				$this->_writeCache($url,$this->status_code,$this->status_message,$this->data,$this->errors);
+				$this->_writeCache($url,$this->status_code,$this->status_message,$this->data,$this->raw_response,$this->errors);
 			}
 		}
 
@@ -529,6 +531,7 @@ invalid json:\n".$content
 		$this->data = $ar["data"];
 		$this->status_code = $ar["status_code"];
 		$this->status_message = $ar["status_message"];
+		$this->raw_response = $ar["raw_response"];
 		$this->errors = $ar["errors"];
 		return $this->data;
 	}
@@ -581,6 +584,13 @@ invalid json:\n".$content
 		return $this->status_message;
 	}
 
+	/**
+	 * Returns raw response of the last request
+	 */
+	function getRawResponse(){
+		return $this->raw_response;
+	}
+
 	protected function _joinParams($params){
 		$out = array();
 		foreach($params as $key => $value){
@@ -598,12 +608,13 @@ invalid json:\n".$content
 		return $url.$connector.$this->_joinParams($params);
 	}
 
-	function _writeCache($url,$status_code,$status_message,$data,$errors){
+	function _writeCache($url,$status_code,$status_message,$data,$raw_response,$errors){
 		$value = array(
 			"url" => $url,
 			"status_code" => $status_code,
 			"status_message" => $status_message,
 			"data" => $data,
+			"raw_response" => $raw_response,
 			"errors" => $errors,
 			"created" => time(),
 			"version" => self::VERSION,

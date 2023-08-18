@@ -17,6 +17,7 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals("OK",$adf->getStatusMessage());
 		$this->assertEquals(array("status" => "available"),$data);
 		$this->assertEquals("GET",$adf->getMethod());
+		$this->assertEquals('{"status":"available"}',$adf->getRawResponse());
 		$this->assertEquals("https://www.atk14.net/api/en/login_availabilities/detail/?login=$login&format=json",$adf->getUrl());
 		$duration = $adf->getDuration();
 		$this->assertTrue(is_float($duration));
@@ -43,6 +44,7 @@ class TcApiDataFetcher extends TcBase {
 		));
 		$this->assertEquals(200,$adf->getStatusCode());
 		$this->assertEquals(array("status" => "taken"),$data);
+		$this->assertEquals('{"status":"taken"}',$adf->getRawResponse());
 
 		// ### logins/create_new
 
