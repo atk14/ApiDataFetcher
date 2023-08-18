@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.10.9] - 2023-08-18
+---------------------
+
+* bc8bbee - Added new method ApiDataFetcher::getRawResponse()
+
 [1.10.8] - 2023-08-01
 ---------------------
 
