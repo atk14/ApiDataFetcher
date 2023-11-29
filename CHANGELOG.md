@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.10.11] - 2023-11-29
+----------------------
+
+* 870e56c - The URL password is hidden in the exception message
+
 [1.10.10] - 2023-08-18
 ----------------------
 
