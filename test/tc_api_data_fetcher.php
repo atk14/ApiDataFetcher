@@ -92,6 +92,12 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals("https://www.atk14.net/api/en/http_requests/detail/?id=456&format=json",$data["url"]);
 	}
 
+	function test__HidePasswordInURL(){
+		$this->assertEquals("https://www.atk14.net/api/en/articles/detail/",ApiDataFetcher::_HidePasswordInURL("https://www.atk14.net/api/en/articles/detail/"));
+		$this->assertEquals("https://devel:******@www.atk14.net/api/en/articles/detail/",ApiDataFetcher::_HidePasswordInURL("https://devel:Th3Gr3aS3kr3T@www.atk14.net/api/en/articles/detail/"));
+		$this->assertEquals("https://GR:******@www.atk14.net/api/en/articles/detail/",ApiDataFetcher::_HidePasswordInURL("https://GR:DEVEL:Th3Gr3@S3kr3T@www.atk14.net/api/en/articles/detail/"));
+	}
+
 	function test_lang(){
 		$adf = new ApiDataFetcher("https://skelet.atk14.net/api/",array(
 			"logger" => new Logger(),

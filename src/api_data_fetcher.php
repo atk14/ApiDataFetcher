@@ -361,7 +361,7 @@ class ApiDataFetcher{
 				$_err_notes = array();
 				if($this->status_code){ $_err_notes[] = "HTTP $status_code $status_message"; }
 				if(strlen($error_message)){ $_err_notes[] = $error_message; }
-				throw new Exception("No content on $url (".join(";",$_err_notes).")");
+				throw new Exception(sprintf("No content on %s (%s)",ApiDataFetcher::_HidePasswordInURL($url),join(";",$_err_notes)));
 			}
 
 			if(strlen($content)>0){
@@ -751,5 +751,10 @@ invalid json:\n".$content
 		if($this->logger){
 			$this->logger->flush();
 		}
+	}
+
+	static function _HidePasswordInURL($url){
+		$url = preg_replace('/^(https?:\/\/[^\/]+?):[^\/]+@/','\1:******@',$url);
+		return $url;
 	}
 }
