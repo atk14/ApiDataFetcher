@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.10.12] - 2024-02-06
+----------------------
+
+* 6a13e0c - [PHP8.2] Fix
+
 [1.10.11] - 2023-11-29
 ----------------------
 
