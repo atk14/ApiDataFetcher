@@ -31,6 +31,8 @@ class ApiDataFetcher{
 	protected $default_params;
 	protected $lang;
 	protected $base_url;
+	protected $cache_storage;
+	protected $data;
 
 	protected $errors;
 	protected $status_code;
