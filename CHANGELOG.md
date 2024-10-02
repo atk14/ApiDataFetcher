@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.11] - 2024-02-06
+----------------------
+
+* CacheFileStorage improved
+
 [1.10.12] - 2024-02-06
 ----------------------
 
