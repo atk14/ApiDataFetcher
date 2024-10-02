@@ -1,12 +1,20 @@
 <?php
 class CacheFileStorage{
 
-	function read($key){
-		$TEMP = Files::GetTempDir();
+	protected $dir;
 
+	function __construct(string $dir = null){
+		if(is_null($dir)){
+			$TEMP = Files::GetTempDir();
+			$dir = "$TEMP/cache_file_storage";
+		}
+		$this->dir = $dir;
+	}
+
+	function read(string $key){
 		$orig_key = $key;
 		$key = sha1($key);
-		$filename = $TEMP . "/cache_file_storage/" . $key;
+		$filename = "$this->dir/$key";
 		if(file_exists($filename)){
 			$content = Files::GetFileContent($filename);
 			$ar = unserialize($content);
@@ -16,18 +24,17 @@ class CacheFileStorage{
 		}
 	}
 
-	function write($key,$data){
-		$TEMP = Files::GetTempDir();
-
+	function write(string $key, mixed $data){
 		$content = serialize(array(
 			"key" => $key,
 			"data" => $data,
 		));
 		$key = sha1($key);
-		//echo "gonna to save:\n";
-		//var_dump($data);
-		Files::Mkdir($dir = $TEMP . "/cache_file_storage/");
+		Files::Mkdir($this->dir,$err,$err_msg);
+		if($err){
+			throw new Exception(get_class($this).": directory $this->dir cannot be created: $err_msg");
+		}
 		$tmp_file = Files::WriteToTemp($content);
-		Files::MoveFile($tmp_file,"$dir$key");
+		Files::MoveFile($tmp_file,"$this->dir/$key");
 	}
 }
