@@ -3,8 +3,9 @@ class CacheFileStorage{
 
 	protected $dir;
 
-	function __construct(string $dir = null){
+	function __construct($dir = null){
 		if(is_null($dir)){
+			$dir = (string)$dir;
 			$TEMP = Files::GetTempDir();
 			$dir = "$TEMP/cache_file_storage";
 		}
@@ -17,7 +18,8 @@ class CacheFileStorage{
 	 *		echo $content;
 	 *	}
 	 */
-	function readInto(string $key, &$content, &$content_timestamp = null){
+	function readInto($key, &$content, &$content_timestamp = null){
+		$key = (string)$key;
 		$content = null;
 		$content_timestamp = null;
 
@@ -39,7 +41,12 @@ class CacheFileStorage{
 		return false;
 	}
 
-	function read(string $key){
+	/**
+	 *
+	 * 
+	 */
+	function read($key){
+		$key = (string)$key;
 		$content = null;
 		$this->readInto($key,$content);
 		return $content;
@@ -50,7 +57,11 @@ class CacheFileStorage{
 	 *	$cache->write("snippet","<b>content</b>");
 	 *	$cache->write("snippet","<b>content</b>",60); // cache is automatically invalidated after 60 seconds
 	 */
-	function write(string $key, $data, int $expires = null){
+	function write($key, $data,$expires = null){
+		$key = (string)$key;
+		if(!is_null($expires)){
+			$expires = (int)$expires;
+		}
 		$content = serialize(array(
 			"key" => $key,
 			"data" => $data,
