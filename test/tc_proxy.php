@@ -19,6 +19,6 @@ class TcProxy extends TcBase {
 		} catch(Exception $e) {
 			$exception_message = $e->getMessage();
 		}
-		$this->assertContains("could not connect to proxy server tcp://127.0.0.1:8119",$exception_message);
+		$this->assertStringContains("could not connect to proxy server tcp://127.0.0.1:8119",$exception_message);
 	}
 }

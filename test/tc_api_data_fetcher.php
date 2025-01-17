@@ -178,7 +178,7 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals(array("status" => "available"),$data);
 		//
 		$this->assertEquals(1,sizeof($logger->messages));
-		$this->assertContains('[debug] ApiDataFetcher: GET https://skelet.atk14.net/api/en/login_availabilities/detail/?login=yuri&format=json',$logger->messages[0]);
+		$this->assertStringContains('[debug] ApiDataFetcher: GET https://skelet.atk14.net/api/en/login_availabilities/detail/?login=yuri&format=json',$logger->messages[0]);
 	}
 
 	function test_getApiUrl(){
@@ -227,7 +227,7 @@ class TcApiDataFetcher extends TcBase {
 		
 		// No content on https://www.nonsence-nonsence-nonsence-nonsence.com/api/en/articles/index/?format=json (failed to open socket: could not resolve host: www.nonsence-nonsence-nonsence-nonsence.com (php_network_getaddresses: getaddrinfo failed: Name or service not known) [0])
 		// No content on https://www.nonsence-nonsence-nonsence-nonsence.com/api/en/articles/index/?format=json (failed to open socket: php_network_getaddresses: getaddrinfo for www.nonsence-nonsence-nonsence-nonsence.com failed: Name or service not known [0])
-		$this->assertContains("No content on https://www.nonsence-nonsence-nonsence-nonsence.com/api/en/articles/index/?format=json (failed to open socket:",$exception_msg);
+		$this->assertStringContains("No content on https://www.nonsence-nonsence-nonsence-nonsence.com/api/en/articles/index/?format=json (failed to open socket:",$exception_msg);
 	}
 
 	function test__serializeErrorMessages(){
