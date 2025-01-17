@@ -76,7 +76,7 @@ class TcApiDataFetcher extends TcBase {
 			"password" => "secret1234"
 		),$options);
 		$this->assertEquals(201,$adf->getStatusCode());
-		$this->assertInternalType("array",$data);
+		$this->assertTrue(is_array($data),"not an array: ".print_r($data,true));
 		$this->assertEquals($login,$data["login"]);
 
 		// ### put method
