@@ -2,7 +2,7 @@
 class TcCaching extends TcBase {
 
 	function test(){
-		$apf = new ApiDataFetcher("https://www.timeapi.io/api/",array("lang" => "", "automatically_add_trailing_slash" => false, "default_params" => array())); // non-ATK14 API - so there is need to set empty lang
+		$apf = new ApiDataFetcher("https://www.timeapi.io/api/",array("lang" => "", "automatically_add_trailing_slash" => false, "default_params" => array(), "socket_timeout" => 10.0)); // non-ATK14 API - so there is need to set empty lang
 		$data1 = $apf->get("timezone/zone",array("timezone" => "Europe/Prague"),array("cache" => 60));
 		$this->assertEquals(200,$apf->getStatusCode());
 		$this->assertEquals("OK",$apf->getStatusMessage());
@@ -10,7 +10,7 @@ class TcCaching extends TcBase {
 
 		sleep(2);
 
-		$apf = new ApiDataFetcher("https://www.timeapi.io/api/",array("lang" => "", "automatically_add_trailing_slash" => false, "default_params" => array())); // non-ATK14 API - so there is need to set empty lang
+		$apf = new ApiDataFetcher("https://www.timeapi.io/api/",array("lang" => "", "automatically_add_trailing_slash" => false, "default_params" => array(), "socket_timeout" => 10.0)); // non-ATK14 API - so there is need to set empty lang
 		$data2 = $apf->get("timezone/zone",array("timezone" => "Europe/Prague"),array("cache" => 60));
 		$this->assertEquals(200,$apf->getStatusCode());
 		$this->assertEquals("OK",$apf->getStatusMessage());
