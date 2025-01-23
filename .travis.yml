@@ -33,9 +33,10 @@ jobs:
         - sudo apt update
         - sudo apt install php8.2 php8.2-mbstring
         - php -v
-        - sudo apt-get install privoxy
-        - sudo /etc/init.d/privoxy start
-        - composer update --dev
+        - sudo apt-get install privoxy # privoxy is needed for UrlFetcher testing
+        - sudo service privoxy start 2>&1 || echo "Starting privoxy failed" # privoxy doesn't start on Linux Jammy! Why?
+        - sudo service privoxy status 2>&1 || echo "Failed"
+        - sudo systemctl status privoxy.service 2>&1 || echo "Failed"
     - name: "PHP: 8.3"
       dist: jammy
       language: ruby # This makes no sence to me, but it works!
@@ -45,9 +46,10 @@ jobs:
         - sudo apt update
         - sudo apt install php8.3 php8.3-mbstring
         - php -v
-        - sudo apt-get install privoxy
-        - sudo /etc/init.d/privoxy start
-        - composer update --dev
+        - sudo apt-get install privoxy # privoxy is needed for UrlFetcher testing
+        - sudo service privoxy start 2>&1 || echo "Starting privoxy failed" # privoxy doesn't start on Linux Jammy! Why?
+        - sudo service privoxy status 2>&1 || echo "Failed"
+        - sudo systemctl status privoxy.service 2>&1 || echo "Failed"
     - name: "PHP: 8.4"
       dist: jammy
       language: ruby # This makes no sence to me, but it works!
@@ -57,13 +59,16 @@ jobs:
         - sudo apt update
         - sudo apt install php8.4 php8.4-mbstring
         - php -v
-        - sudo apt-get install privoxy
-        - sudo /etc/init.d/privoxy start
-        - composer update --dev
+        - sudo apt-get install privoxy # privoxy is needed for UrlFetcher testing
+        - sudo service privoxy start 2>&1 || echo "Starting privoxy failed" # privoxy doesn't start on Linux Jammy! Why?
+        - sudo service privoxy status 2>&1 || echo "Failed"
+        - sudo systemctl status privoxy.service 2>&1 || echo "Failed"
 
 before_install:
   - sudo apt-get install privoxy
   - sudo /etc/init.d/privoxy start
+
+before_script:
   - composer update --dev
 
 script:
