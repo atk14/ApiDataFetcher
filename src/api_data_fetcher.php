@@ -726,10 +726,25 @@ invalid json:\n".$content
 	 *	$this->_loggerLog("Some information")
 	 *
 	 */
-	function _loggerLog($message){
-		if($this->logger){
-			$this->logger->info($message);
+	function _loggerLog($message,$options = []){
+		if(!$this->logger){ return; }
+
+		$options += [
+			"log_level" => "info",
+		];
+
+		$message = $this->_hidePasswordInMessage($message);
+
+		$log_level = $options["log_level"];
+		$this->logger->$log_level($message);
+	}
+
+	function _hidePasswordInMessage($message){
+		if(preg_match('/@/',$this->base_url)){
+			$replace = preg_replace('/:\/\/([^:@]+):([^@:]+)@/','://\1:********@',$this->base_url);
+			$message = str_replace($this->base_url,$replace,$message);
 		}
+		return $message;
 	}
 
 	/**
@@ -739,9 +754,7 @@ invalid json:\n".$content
 	 *
 	 */
 	function _loggerDebug($message){
-		if($this->logger){
-			$this->logger->debug($message);
-		}
+		$this->_loggerLog($message,["log_level" => "debug"]);
 	}
 
 	/**

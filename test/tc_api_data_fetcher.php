@@ -256,4 +256,11 @@ class TcApiDataFetcher extends TcBase {
 		$current_timeout = $adf->setSocketTimeout(10.0);
 		$this->assertEquals(5.0,$current_timeout);
 	}
+
+	function test__hidePasswordInMessage(){
+		$adf = new ApiDataFetcher("https://username:secret@www.atk14.net/api/");
+
+		$this->assertEquals("GET https://www.atk14.net/api/ HTTP/1.0",$adf->_hidePasswordInMessage("GET https://www.atk14.net/api/ HTTP/1.0"));
+		$this->assertEquals("GET https://username:********@www.atk14.net/api/ HTTP/1.0",$adf->_hidePasswordInMessage("GET https://username:secret@www.atk14.net/api/ HTTP/1.0"));
+	}
 }
