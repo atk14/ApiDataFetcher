@@ -3,8 +3,13 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.11.1] - 2025-03-10
+---------------------
+
+* c5d7806 - Hidding password from loging messages
+
 [1.11] - 2024-02-06
-----------------------
+-------------------
 
 * CacheFileStorage improved
 
