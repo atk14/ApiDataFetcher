@@ -3,6 +3,10 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.12] - 2025-04-11
+-------------------
+* * ee1bf55 - Added option get_content_callback with default value: function($url_fetcher){ return $url_fetcher->getContent(); }
+
 [1.11.1] - 2025-03-10
 ---------------------
 

@@ -23,7 +23,7 @@ if(!defined("API_DATA_FETCHER_BASE_URL")) {
  */
 class ApiDataFetcher{
 
-	const VERSION = "1.11";
+	const VERSION = "1.12";
 
 	protected $logger;
 	protected $request;
