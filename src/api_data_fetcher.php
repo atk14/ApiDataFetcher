@@ -55,6 +55,8 @@ class ApiDataFetcher{
 
 	protected static $QueriesExecuted = array();
 
+	protected $get_content_callback; // function($url_fetcher){ return $url_fetcher->getContent(); }
+
 	/**
 	 *
 	 * <code>
@@ -98,6 +100,8 @@ class ApiDataFetcher{
 			"communicate_via_command" => null, // path to a command
 
 			"socket_timeout" => 5.0,
+
+			"get_content_callback" => function($url_fetcher){ return $url_fetcher->getContent(); }
 		);
 
 		if(is_null($options["logger"])){
@@ -128,6 +132,7 @@ class ApiDataFetcher{
 		$this->proxy = $options["proxy"];
 		$this->communicate_via_command = $options["communicate_via_command"];
 		$this->socket_timeout = $options["socket_timeout"];
+		$this->get_content_callback = $options["get_content_callback"];
 	}
 
 	/**
@@ -521,7 +526,8 @@ invalid json:\n".$content
 				"request_method" => $options["method"],
 			));
 		}
-		$content = $u->getContent();
+		$callback = $this->get_content_callback;
+		$content = is_callable($callback) ? $callback($u) : $u->getContent();
 		$status_code = $u->getStatusCode();
 		$status_message = $u->getStatusMessage();
 		$error_message = $u->getErrorMessage();
