@@ -12,7 +12,7 @@ class TcCachingErrorResponses extends TcBase {
 			"content_type" => "text/json",
 		],[
 			"cache" => 60,
-			"acceptable_error_codes" => [400],
+			"acceptable_error_codes" => [400,404],
 		]);
 
 		$this->assertEquals(null,$data);
@@ -26,12 +26,26 @@ class TcCachingErrorResponses extends TcBase {
 			"content_type" => "text/json",
 		],[
 			"cache" => 60,
-			"acceptable_error_codes" => [400],
+			"acceptable_error_codes" => [400,404],
 		]);
 
 		$this->assertEquals(null,$data);
 		$this->assertEquals('{"msg":"ok"}',$apf->getRawResponse());
 		$this->assertEquals(400,$apf->getStatusCode());
 		$this->assertEquals(true,$apf->isResponseCached());
+
+		$data = $apf->get("echoes/detail",[
+			"response" => json_encode(["msg" => "ok"]),
+			"status_code" => 404,
+			"content_type" => "text/json",
+		],[
+			"cache" => 60,
+			"acceptable_error_codes" => [400,404],
+		]);
+
+		$this->assertEquals(null,$data);
+		$this->assertEquals('{"msg":"ok"}',$apf->getRawResponse());
+		$this->assertEquals(404,$apf->getStatusCode());
+		$this->assertEquals(false,$apf->isResponseCached());
 	}
 }
