@@ -364,13 +364,13 @@ class ApiDataFetcher{
 
 		}else{
 
-			if(!strlen($content) && ($this->status_code!=204)){
+			if(!strlen((string)$content) && ($this->status_code!=204)){
 				if($options["return_cached_content_on_error"] && $cached_ar){
 					return $this->__useOutdatedCache($cached_ar);
 				}
 				$_err_notes = array();
 				if($this->status_code){ $_err_notes[] = "HTTP $status_code $status_message"; }
-				if(strlen($error_message)){ $_err_notes[] = $error_message; }
+				if(strlen((string)$error_message)){ $_err_notes[] = $error_message; }
 				throw new Exception(sprintf("No content on %s (%s)",ApiDataFetcher::_HidePasswordInURL($url),join(";",$_err_notes)));
 			}
 
@@ -491,7 +491,7 @@ invalid json:\n".$content
 		if($this->communicate_via_command){
 			$u = new UrlFetcherViaCommand($this->communicate_via_command,$url,array(
 				"user_agent" => $this->user_agent,
-				"additional_headers" => $headers
+				"additional_headers" => $headers,
 			));
 		}else{
 			$u = new UrlFetcher($url,array(
