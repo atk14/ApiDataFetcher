@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.12.2] - 2025-09-15
+---------------------
+
+* b328b15 - Added options verify_peer and verify_peer_name
+
 [1.12.1] - 2025-06-16
 ---------------------
 * a90915d - Added method ApiDataFetcher::isResponseCached()
