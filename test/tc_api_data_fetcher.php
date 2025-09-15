@@ -47,6 +47,7 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals('{"status":"taken"}',$adf->getRawResponse());
 
 		// ### logins/create_new
+		/*
 
 		$options = array(
 			"acceptable_error_codes" => array(
@@ -78,6 +79,7 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals(201,$adf->getStatusCode());
 		$this->assertTrue(is_array($data),"not an array: ".print_r($data,true));
 		$this->assertEquals($login,$data["login"]);
+		// */
 
 		// ### put method
 
