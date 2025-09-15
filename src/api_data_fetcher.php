@@ -59,6 +59,10 @@ class ApiDataFetcher{
 
 	protected $is_reponse_cached = false;
 
+	protected $verify_peer = true;
+
+	protected $verify_peer_name = true;
+
 	/**
 	 *
 	 * <code>
@@ -103,7 +107,10 @@ class ApiDataFetcher{
 
 			"socket_timeout" => 5.0,
 
-			"get_content_callback" => function($url_fetcher){ return $url_fetcher->getContent(); }
+			"get_content_callback" => function($url_fetcher){ return $url_fetcher->getContent(); },
+
+			"verify_peer" => true,
+			"verify_peer_name" => true,
 		);
 
 		if(is_null($options["logger"])){
@@ -135,6 +142,8 @@ class ApiDataFetcher{
 		$this->communicate_via_command = $options["communicate_via_command"];
 		$this->socket_timeout = $options["socket_timeout"];
 		$this->get_content_callback = $options["get_content_callback"];
+		$this->verify_peer = $options["verify_peer"];
+		$this->verify_peer_name = $options["verify_peer_name"];
 	}
 
 	/**
@@ -498,6 +507,8 @@ invalid json:\n".$content
 				"user_agent" => $this->user_agent,
 				"additional_headers" => $headers,
 				"proxy" => $this->proxy,
+				"verify_peer" => $this->verify_peer,
+				"verify_peer_name" => $this->verify_peer_name,
 			));
 		}
 

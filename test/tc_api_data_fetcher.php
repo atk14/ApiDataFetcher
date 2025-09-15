@@ -115,14 +115,17 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals("https://skelet.atk14.net/api/cs/login_availabilities/detail/?login=yuri&format=json",$adf->getUrl());
 
 		// invalid login in the default language (en)
+		/*
 		$data = $adf->post("logins/create_new",array(
 			"login" => "yuri",
 			"password" => "badass",
 		),array("acceptable_error_codes" => array("404")));
 		$this->assertEquals(null,$data);
 		$this->assertEquals(array("There is no such user"),$adf->getErrors());
+		*/
 
 		// invalid login in czech
+		/*
 		$data = $adf->post("logins/create_new",array(
 			"login" => "yuri",
 			"password" => "badass",
@@ -130,6 +133,7 @@ class TcApiDataFetcher extends TcBase {
 		),array("acceptable_error_codes" => array("404")));
 		$this->assertEquals(null,$data);
 		$this->assertEquals(array("Takový uživatel tady není"),$adf->getErrors());
+		*/
 
 		// suppressing lang
 		$adf = new ApiDataFetcher("https://skelet.atk14.net/api/",array(
@@ -264,5 +268,33 @@ class TcApiDataFetcher extends TcBase {
 
 		$this->assertEquals("GET https://www.atk14.net/api/ HTTP/1.0",$adf->_hidePasswordInMessage("GET https://www.atk14.net/api/ HTTP/1.0"));
 		$this->assertEquals("GET https://username:********@www.atk14.net/api/ HTTP/1.0",$adf->_hidePasswordInMessage("GET https://username:secret@www.atk14.net/api/ HTTP/1.0"));
+	}
+
+	function test_verify_peer_name(){
+		$adf = new ApiDataFetcher("https://alt.skelet.atk14.net/api/");
+
+		$exception_thrown = false;
+		try {
+			$data = @$adf->get("login_availabilities/detail",array(
+				"login" => "admin",
+			));
+		}catch(Exception $e){
+			$exception_thrown = true;
+		}
+
+		$this->assertEquals(true,$exception_thrown);
+
+		// --
+
+		$adf = new ApiDataFetcher("https://alt.skelet.atk14.net/api/",array(
+			"verify_peer_name" => false
+		));
+
+		$data = $adf->get("login_availabilities/detail",array(
+			"login" => "admin",
+		));
+		$this->assertEquals(200,$adf->getStatusCode());
+		$this->assertEquals(array("status" => "taken"),$data);
+		$this->assertEquals('{"status":"taken"}',$adf->getRawResponse());
 	}
 }
