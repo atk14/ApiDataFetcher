@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.12.3] - 2026-02-02
+---------------------
+
+* abbdc13 - ApiDataFetcher throws various exceptions
+
 [1.12.2] - 2025-09-15
 ---------------------
 
