@@ -21,6 +21,6 @@ class TcEmptyOutput extends TcBase {
 		$data = $apf->get("echoes/detail",["response" => "", "status_code" => 204]);
 		$this->assertEquals(204,$apf->getStatusCode());
 		$this->assertEquals("No Content",$apf->getStatusMessage());
-		$this->assertEquals(array(),$data);
+		$this->assertEquals([],$data);
 	}
 }

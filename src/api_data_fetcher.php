@@ -356,7 +356,7 @@ class ApiDataFetcher{
 		$timer = new StopWatch();
 		$timer->start();
 
-		list($content,$status_code,$status_message,$error_message) = $this->__doHttpRequest($url,$params,$options);
+		list($content,$status_code,$status_message,$error_message,$response_headers) = $this->__doHttpRequest($url,$params,$options);
 
 		$timer->stop();
 		$this->duration = $timer->getResult();
@@ -380,7 +380,12 @@ class ApiDataFetcher{
 				$_err_notes = array();
 				if($this->status_code){ $_err_notes[] = "HTTP $status_code $status_message"; }
 				if(strlen((string)$error_message)){ $_err_notes[] = $error_message; }
-				throw new Exception(sprintf("No content on %s (%s)",ApiDataFetcher::_HidePasswordInURL($url),join(";",$_err_notes)));
+
+				if(is_null($this->status_code)){
+					throw new ApiDataFetcher\NetworkException(sprintf("Network error on %s (%s)",ApiDataFetcher::_HidePasswordInURL($url),join(";",$_err_notes)));
+				}
+
+				throw new ApiDataFetcher\NoContentException(sprintf("No content on %s (%s)",ApiDataFetcher::_HidePasswordInURL($url),join(";",$_err_notes)));
 			}
 
 			if(strlen($content)>0){
@@ -395,14 +400,14 @@ invalid json:\n".$content
 					if($options["return_cached_content_on_error"] && $cached_ar){
 						return $this->__useOutdatedCache($cached_ar);
 					}
-					throw new Exception("json_decode() failed on $url (HTTP status code: $this->status_code; content: ".(strlen($content)>2000 ? substr($content,0,2000)."..." : $content).")");
+					throw new ApiDataFetcher\InvalidContentException("json_decode() failed on $url (HTTP status code: $this->status_code; content: ".(strlen($content)>2000 ? substr($content,0,2000)."..." : $content).")",$content);
 				}
 
 			}else{
 
 				// The $content is empty (HTTP status code is 204).
-				// Empty answer means empty JSON.
-				$d = array();
+				// No content means empty json
+				$d = [];
 
 			}
 
@@ -439,7 +444,12 @@ invalid json:\n".$content
 			if($options["return_cached_content_on_error"] && $cached_ar){
 				return $this->__useOutdatedCache($cached_ar);
 			}
-			throw new Exception("HTTP status code $this->status_code (".$this->_serializeErrorMessages($this->errors)."), url: $url");
+			throw new ApiDataFetcher\HttpException(
+				"HTTP status code $this->status_code (".$this->_serializeErrorMessages($this->errors)."), url: $url",
+				$this->status_code,
+				$content,
+				$response_headers
+			);
 		}else{
 			$this->_loggerDebug(
 				"ApiDataFetcher: $options[method] $url (HTTP $this->status_code, $timer)".
@@ -540,13 +550,15 @@ invalid json:\n".$content
 				"request_method" => $options["method"],
 			));
 		}
+
 		$callback = $this->get_content_callback;
 		$content = is_callable($callback) ? $callback($u) : $u->getContent();
 		$status_code = $u->getStatusCode();
 		$status_message = $u->getStatusMessage();
 		$error_message = $u->getErrorMessage();
+		$response_headers = $u->getResponseHeaders();
 
-		return array($content,$status_code,$status_message,$error_message);
+		return array($content,$status_code,$status_message,$error_message,$response_headers);
 	}
 
 	function __setCacheAndReturnData($ar){

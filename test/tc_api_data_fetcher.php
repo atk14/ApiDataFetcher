@@ -206,34 +206,42 @@ class TcApiDataFetcher extends TcBase {
 
 		$exception_msg = "";
 
+		$exception = null;
 		try {
 			$data = $adf->get("nonsence/nonsence");
-		} catch(Exception $e) {
-			$exception_msg = $e->getMessage();
+		} catch(Exception $exception) {
+			$exception_msg = $exception->getMessage();
 		}
 
 		$this->assertTrue(!isset($data));
 		$this->assertEquals("HTTP status code 404 (Nothing has been found on this address), url: https://www.atk14.net/api/en/nonsence/nonsence/?format=json",$exception_msg);
+
+		$this->assertEquals("ApiDataFetcher\HttpException",get_class($exception));
+		$this->assertEquals("404",$exception->getStatusCode());
+		$this->assertEquals('["Nothing has been found on this address"]',(string)$exception->getContent());
+		$this->assertStringContains('404 Not Found',$exception->getHeaders());
 	}
 
 	function test_error_unknown_host(){
 		$adf = new ApiDataFetcher("https://www.nonsence-nonsence-nonsence-nonsence.com/api/");
 
-		$exception_msg = "";
-
 		set_error_handler(function() { /* ignore errors */ });
+
+		$exception = null;
+		$exception_msg = "";
 		try {
 			$data = $adf->get("articles/index");
-		} catch(Exception $e) {
-			$exception_msg = $e->getMessage();
+		} catch(Exception $exception) {
+			$exception_msg = $exception->getMessage();
 		}
+
 		restore_error_handler();
 
 		$this->assertTrue(!isset($data));
 		
-		// No content on https://www.nonsence-nonsence-nonsence-nonsence.com/api/en/articles/index/?format=json (failed to open socket: could not resolve host: www.nonsence-nonsence-nonsence-nonsence.com (php_network_getaddresses: getaddrinfo failed: Name or service not known) [0])
-		// No content on https://www.nonsence-nonsence-nonsence-nonsence.com/api/en/articles/index/?format=json (failed to open socket: php_network_getaddresses: getaddrinfo for www.nonsence-nonsence-nonsence-nonsence.com failed: Name or service not known [0])
-		$this->assertStringContains("No content on https://www.nonsence-nonsence-nonsence-nonsence.com/api/en/articles/index/?format=json (failed to open socket:",$exception_msg);
+		$this->assertStringContains("Network error on https://www.nonsence-nonsence-nonsence-nonsence.com/api/en/articles/index/?format=json (failed to open socket:",$exception_msg);
+
+		$this->assertEquals("ApiDataFetcher\NetworkException",get_class($exception));
 	}
 
 	function test__serializeErrorMessages(){
@@ -274,15 +282,18 @@ class TcApiDataFetcher extends TcBase {
 		$adf = new ApiDataFetcher("https://alt.skelet.atk14.net/api/");
 
 		$exception_thrown = false;
+		$exception = null;
 		try {
 			$data = @$adf->get("login_availabilities/detail",array(
 				"login" => "admin",
 			));
-		}catch(Exception $e){
+		}catch(Exception $exception){
 			$exception_thrown = true;
 		}
 
 		$this->assertEquals(true,$exception_thrown);
+
+		$this->assertEquals("ApiDataFetcher\NetworkException",get_class($exception));
 
 		// --
 
@@ -296,5 +307,62 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals(200,$adf->getStatusCode());
 		$this->assertEquals(array("status" => "taken"),$data);
 		$this->assertEquals('{"status":"taken"}',$adf->getRawResponse());
+	}
+
+	function test_no_content(){
+		$adf = new ApiDataFetcher("https://www.atk14.net/api/");
+
+		$exception_thrown = false;
+		$exception = null;
+		try {
+			$data = @$adf->get("echoes/detail",array(
+				"response" => "",
+				"status_code" => 200,
+			));
+		}catch(Exception $exception){
+			$exception_thrown = true;
+		}
+
+		$this->assertEquals(true,$exception_thrown);
+
+		$this->assertEquals("ApiDataFetcher\NoContentException",get_class($exception));
+		$this->assertEquals("",$exception->getContent());
+
+		//
+
+		$exception_thrown = false;
+		$exception = null;
+		try {
+			$data = @$adf->get("echoes/detail",array(
+				"response" => "",
+				"status_code" => 204, // 204 No Content
+			));
+		}catch(Exception $exception){
+			$exception_thrown = true;
+		}
+
+		$this->assertEquals(false,$exception_thrown);
+		$this->assertEquals([],$data);
+	}
+
+	function test_invalid_json(){
+		$adf = new ApiDataFetcher("https://www.atk14.net/api/");
+
+		$exception_thrown = false;
+		$exception = null;
+		try {
+			$data = @$adf->get("echoes/detail",array(
+				"response" => "invalid_content",
+				"status_code" => 200,
+			));
+		}catch(Exception $exception){
+			$exception_thrown = true;
+		}
+
+		$this->assertEquals(true,$exception_thrown);
+
+		$this->assertEquals("json_decode() failed on https://www.atk14.net/api/en/echoes/detail/?response=invalid_content&status_code=200&format=json (HTTP status code: 200; content: invalid_content)",$exception->getMessage());
+		$this->assertEquals("ApiDataFetcher\InvalidContentException",get_class($exception));
+		$this->assertEquals("invalid_content",$exception->getContent());
 	}
 }
