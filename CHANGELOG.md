@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.12.4] - 2026-02-06
+---------------------
+
+* def4342 - Logging improved
+
 [1.12.3] - 2026-02-02
 ---------------------
 
