@@ -365,4 +365,10 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals("ApiDataFetcher\InvalidContentException",get_class($exception));
 		$this->assertEquals("invalid_content",$exception->getContent());
 	}
+
+	function test__PrepareRawPostDataForLog(){
+		$this->assertEquals("Hello",ApiDataFetcher::_PrepareRawPostDataForLog("Hello"));
+		$this->assertEquals("[binary data, 16 bytes]",ApiDataFetcher::_PrepareRawPostDataForLog(hex2bin("0588196d706c65206865782064617461")));
+		$this->assertEquals("Hello... [truncated]",ApiDataFetcher::_PrepareRawPostDataForLog("Hello World!",["max_length" => 5]));
+	}
 }

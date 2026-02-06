@@ -433,13 +433,19 @@ invalid json:\n".$content
 			$valid_response = false;
 		}
 
+		$msg = [];
+		$msg[] = "ApiDataFetcher: $options[method] $url (HTTP $this->status_code, $timer)";
+		if($options["raw_post_data"]){
+			$msg[] = "raw_post_data: ".self::_PrepareRawPostDataForLog($options["raw_post_data"]);
+		}elseif($options["method"]=="POST"){
+			$msg[] = "params: ".trim(print_r($params,true));
+		}
+
 		if(!$valid_response && !in_array($this->status_code,$options["acceptable_error_codes"])){
-			$this->_loggerLog(
-				"ApiDataFetcher: $options[method] $url (HTTP $this->status_code, $timer)\n".
-				($options["method"] == "POST" ? "params: ".print_r($params,true)."\n" : "").
-				"error: ".$this->_serializeErrorMessages($this->errors)."\n".
-				"requested URL: ".$this->request->getUrl()
-			);
+
+			$msg[] = "error: ".$this->_serializeErrorMessages($this->errors);
+
+			$this->_loggerLog(join("\n",$msg));
 			$this->_loggerFlush();
 			if($options["return_cached_content_on_error"] && $cached_ar){
 				return $this->__useOutdatedCache($cached_ar);
@@ -451,10 +457,7 @@ invalid json:\n".$content
 				$response_headers
 			);
 		}else{
-			$this->_loggerDebug(
-				"ApiDataFetcher: $options[method] $url (HTTP $this->status_code, $timer)".
-				($options["method"] == "POST" ? "\nparams: ".print_r($params,true)."\n" : "")
-			);
+			$this->_loggerDebug(join("\n",$msg));
 			if($options["cache"]>0){
 				$this->_writeCache($url,$this->status_code,$this->status_message,$this->data,$this->raw_response,$this->errors);
 			}
@@ -803,6 +806,18 @@ invalid json:\n".$content
 		if($this->logger){
 			$this->logger->flush();
 		}
+	}
+
+	static function _PrepareRawPostDataForLog($raw_post_data,$options = []){
+		$options += [
+			"max_length" => 2000,
+		];
+		if(!preg_match("//u", $raw_post_data)){
+			return "[binary data, ".strlen($raw_post_data)." bytes]";
+		}
+		$max_length = $options["max_length"];
+		$raw_post_data = preg_replace("/^(.{".$max_length."}).+$/us","\\1... [truncated]",$raw_post_data);
+		return $raw_post_data;
 	}
 
 	static function _HidePasswordInURL($url){
