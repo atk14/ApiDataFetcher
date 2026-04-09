@@ -168,6 +168,26 @@ class TcApiDataFetcher extends TcBase {
 
 		$data = $adf->get("http_requests/detail/?format=json&p1=a",array("p2" => "b","p3" => "c"));
 		$this->assertEquals("/api/en/http_requests/detail/?format=json&p1=a&p2=b&p3=c",$data["uri"]);
+
+		// deobjectivize
+
+		$article = new Article(122333);
+		$data = $adf->get("http_requests/detail",array("id" => $article));
+		$this->assertEquals("/api/en/http_requests/detail/?id=122333&format=json",$data["uri"]);
+
+		$s = new Stringerer("45677");
+		$data = $adf->get("http_requests/detail",array("id" => $s));
+		$this->assertEquals("/api/en/http_requests/detail/?id=45677&format=json",$data["uri"]);
+
+		// array
+
+		$data = $adf->get("http_requests/detail",array("a" => "b", "c" => ["d","e"]));
+		$this->assertEquals("/api/en/http_requests/detail/?a=b&c%5B%5D=d&c%5B%5D=e&format=json",$data["uri"]);
+
+		// array + deobjectivize
+
+		$data = $adf->get("http_requests/detail",array("a" => "b", "c" => [$article,$s]));
+		$this->assertEquals("/api/en/http_requests/detail/?a=b&c%5B%5D=122333&c%5B%5D=45677&format=json",$data["uri"]);
 	}
 
 	function test_logger(){

@@ -634,7 +634,23 @@ invalid json:\n".$content
 	}
 
 	protected function _joinParams($params){
+		$params = $this->_deobjectivizeParams($params);
 		return http_build_query($params);
+	}
+
+	protected function _deobjectivizeParams($params){
+		$out = [];
+		foreach($params as $k => $v){
+			if(is_array($v)){
+				$out[$k] = $this->_deobjectivizeParams($v);
+				continue;
+			}
+			if(is_object($v)){
+				$v = method_exists($v,"getId") ? $v->getId() : (string)$v;
+			}
+			$out[$k] = $v;
+		}
+		return $out;
 	}
 
 	protected function _addParamsToUrl($url,$params){
