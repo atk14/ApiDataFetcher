@@ -700,7 +700,7 @@ invalid json:\n".$content
 		$out[] = "<br><br>";
 		$out[] = "<pre>";
 		foreach($stats as $el){
-			$out[] = sprintf('action: <a href="%s">%s</a>',h($el["action_url"]),h($el["action"]));
+			$out[] = sprintf('action: <a href="%s">%s</a>',$this->_h($el["action_url"]),$this->_h($el["action"]));
 			$out[] = "duration: ".$this->_formatSeconds($el["duration"]);
 			if($el["method"]=="GET"){
 				$out[] = "$el[method] <a href='$el[url]'>$el[url]</a>";
@@ -736,7 +736,7 @@ invalid json:\n".$content
 			"make_collapsible" => "auto", // "auto", true, false
 		);
 
-		$content = h($this->_varExport($var));
+		$content = $this->_h($this->_varExport($var));
 		$content = preg_replace('/^array \(/','',$content);
 
 		if($options["make_collapsible"]=="auto"){
@@ -823,5 +823,13 @@ invalid json:\n".$content
 	static function _HidePasswordInURL($url){
 		$url = preg_replace('/^(https?:\/\/[^\/]+?):[^\/]+@/','\1:******@',$url);
 		return $url;
+	}
+
+	protected function _h($text){
+		$flags =  ENT_COMPAT | ENT_QUOTES;
+		// as of PHP5.4 the default encoding is UTF-8, it causes troubles in non UTF-8 applications,
+		// I think that the encoding ISO-8859-1 works well in UTF-8 applications
+		$encoding = "ISO-8859-1";
+		return htmlspecialchars($text,$flags,$encoding);
 	}
 }
