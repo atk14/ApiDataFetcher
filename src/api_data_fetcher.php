@@ -57,7 +57,7 @@ class ApiDataFetcher{
 
 	protected $get_content_callback; // function($url_fetcher){ return $url_fetcher->getContent(); }
 
-	protected $is_reponse_cached = false;
+	protected $is_response_cached = false;
 
 	protected $verify_peer = true;
 
@@ -348,7 +348,7 @@ class ApiDataFetcher{
 		$this->duration = null;
 
 		$cached_ar = null;
-		$this->is_reponse_cached = false;
+		$this->is_response_cached = false;
 		if($options["cache"]>0 && ($ar = $this->_readCache($url,$options["cache"],$cached_ar))){
 			return $this->__setCacheAndReturnData($ar);
 		}
@@ -570,7 +570,7 @@ invalid json:\n".$content
 		$this->status_message = $ar["status_message"];
 		$this->raw_response = $ar["raw_response"];
 		$this->errors = $ar["errors"];
-		$this->is_reponse_cached = true;
+		$this->is_response_cached = true;
 		return $this->data;
 	}
 
@@ -630,7 +630,7 @@ invalid json:\n".$content
 	}
 	
 	function isResponseCached(){
-		return $this->is_reponse_cached;
+		return $this->is_response_cached;
 	}
 
 	protected function _joinParams($params){
