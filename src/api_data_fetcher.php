@@ -634,12 +634,7 @@ invalid json:\n".$content
 	}
 
 	protected function _joinParams($params){
-		$out = array();
-		foreach($params as $key => $value){
-			if(is_object($value)){ $value = $value->getId(); }
-			$out[] = urlencode((string)$key)."=".urlencode((string)$value);
-		}
-		return join("&",$out);
+		return http_build_query($params);
 	}
 
 	protected function _addParamsToUrl($url,$params){
