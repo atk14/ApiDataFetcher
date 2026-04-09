@@ -3,9 +3,9 @@ class CacheFileStorage{
 
 	protected $dir;
 
-	function __construct($dir = null){
-		if(is_null($dir)){
-			$dir = (string)$dir;
+	function __construct($dir = ""){
+		$dir = (string)$dir;
+		if(!strlen($dir)){
 			$TEMP = Files::GetTempDir();
 			$dir = "$TEMP/cache_file_storage";
 		}
