@@ -9,6 +9,3 @@ require(__DIR__ . "/article.php");
 require(__DIR__ . "/stringerer.php");
 
 require(__DIR__ . "/../vendor/autoload.php");
-
-$HTTP_REQUEST = new HTTPRequest();
-$HTTP_RESPONSE = new HTTPResponse();

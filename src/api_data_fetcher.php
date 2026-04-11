@@ -26,8 +26,6 @@ class ApiDataFetcher{
 	const VERSION = "1.12.4";
 
 	protected $logger;
-	protected $request;
-	protected $response;
 	protected $default_params;
 	protected $lang;
 	protected $base_url;
@@ -89,8 +87,6 @@ class ApiDataFetcher{
 
 		$options += array(
 			"logger" => null,
-			"request" => $GLOBALS["HTTP_REQUEST"],
-			"response" => $GLOBALS["HTTP_RESPONSE"],
 			"default_params" => array(
 				"format" => "json"
 			),
@@ -129,8 +125,6 @@ class ApiDataFetcher{
 		}
 
 		$this->logger = $options["logger"];
-		$this->request = $options["request"];
-		$this->response = $options["response"];
 		$this->lang = $options["lang"];
 		$this->base_url = $options["url"];
 		$this->cache_storage = $options["cache_storage"];

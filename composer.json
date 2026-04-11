@@ -19,7 +19,6 @@
         },
         "require-dev": {
                 "atk14/tester": "*",
-                "atk14/http": "*",
                 "atk14/logger": "*"
         },
         "autoload": {
