@@ -273,13 +273,13 @@ class TcApiDataFetcher extends TcBase {
 	}
 
 	function test__serializeErrorMessages(){
-		$adf = new ApiDataFetcher("https://www.atk14.net/api/");
+		$adf = new TestingApiDataFetcher("https://www.atk14.net/api/");
 
-		$this->assertEquals("Error 1 | Error 2",$adf->_serializeErrorMessages(array("Error 1", "Error 2")));
-		$this->assertEquals("e1: Error 1 | e2: Error 2",$adf->_serializeErrorMessages(array("e1" => "Error 1", "e2" => "Error 2")));
-		$this->assertEquals("e1: Error 1 | e2: Error 2 | e_complex: [ Complex error 1 | Complex error 2 ]",$adf->_serializeErrorMessages(array("e1" => "Error 1", "e2" => "Error 2", "e_complex" => array("Complex error 1", "Complex error 2") )));
+		$this->assertEquals("Error 1 | Error 2",$adf->serializeErrorMessages(array("Error 1", "Error 2")));
+		$this->assertEquals("e1: Error 1 | e2: Error 2",$adf->serializeErrorMessages(array("e1" => "Error 1", "e2" => "Error 2")));
+		$this->assertEquals("e1: Error 1 | e2: Error 2 | e_complex: [ Complex error 1 | Complex error 2 ]",$adf->serializeErrorMessages(array("e1" => "Error 1", "e2" => "Error 2", "e_complex" => array("Complex error 1", "Complex error 2") )));
 
-		$this->assertEquals("false: FALSE | true: TRUE | null: NULL",$adf->_serializeErrorMessages(array("false" => FALSE, "true" => TRUE, "null" => null)));
+		$this->assertEquals("false: FALSE | true: TRUE | null: NULL",$adf->serializeErrorMessages(array("false" => FALSE, "true" => TRUE, "null" => null)));
 	}
 
 	function test_setSocketTimeout(){
@@ -300,10 +300,10 @@ class TcApiDataFetcher extends TcBase {
 	}
 
 	function test__hidePasswordInMessage(){
-		$adf = new ApiDataFetcher("https://username:secret@www.atk14.net/api/");
+		$adf = new TestingApiDataFetcher("https://username:secret@www.atk14.net/api/");
 
-		$this->assertEquals("GET https://www.atk14.net/api/ HTTP/1.0",$adf->_hidePasswordInMessage("GET https://www.atk14.net/api/ HTTP/1.0"));
-		$this->assertEquals("GET https://username:********@www.atk14.net/api/ HTTP/1.0",$adf->_hidePasswordInMessage("GET https://username:secret@www.atk14.net/api/ HTTP/1.0"));
+		$this->assertEquals("GET https://www.atk14.net/api/ HTTP/1.0",$adf->hidePasswordInMessage("GET https://www.atk14.net/api/ HTTP/1.0"));
+		$this->assertEquals("GET https://username:********@www.atk14.net/api/ HTTP/1.0",$adf->hidePasswordInMessage("GET https://username:secret@www.atk14.net/api/ HTTP/1.0"));
 	}
 
 	function test_verify_peer_name(){

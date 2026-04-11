@@ -9,3 +9,5 @@ require(__DIR__ . "/article.php");
 require(__DIR__ . "/stringerer.php");
 
 require(__DIR__ . "/../vendor/autoload.php");
+
+require(__DIR__ . "/testing_api_data_fetcher.php");

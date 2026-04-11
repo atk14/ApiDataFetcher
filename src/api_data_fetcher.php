@@ -299,7 +299,7 @@ class ApiDataFetcher{
 	/**
 	 *	$this->_doRequest("products/detail",array("catalog_id" => "1234/3345566"));
 	 */
-	function _doRequest($action,$params,$options){
+	protected function _doRequest($action,$params,$options){
 		$params += array(
 			"lang" => $this->lang,
 		);
@@ -467,7 +467,7 @@ invalid json:\n".$content
 		return $this->data;
 	}
 
-	function _serializeErrorMessages($errors,$array_leading_seq = "",$array_trailing_seq = ""){
+	protected function _serializeErrorMessages($errors,$array_leading_seq = "",$array_trailing_seq = ""){
 		if(!is_array($errors)){
 			if(is_null($errors)){ return "NULL"; }
 			if(is_bool($errors)){ return $errors ? "TRUE" : "FALSE"; }
@@ -483,7 +483,7 @@ invalid json:\n".$content
 		return $array_leading_seq.join(" | ",$out).$array_trailing_seq;
 	}
 
-	function __doHttpRequest($url,$params,$options){
+	protected function __doHttpRequest($url,$params,$options){
 		$options += array(
 			"additional_headers" => array(),
 		);
@@ -562,7 +562,7 @@ invalid json:\n".$content
 		return array($content,$status_code,$status_message,$error_message,$response_headers);
 	}
 
-	function __setCacheAndReturnData($ar){
+	protected function __setCacheAndReturnData($ar){
 		$this->data = $ar["data"];
 		$this->status_code = $ar["status_code"];
 		$this->status_message = $ar["status_message"];
@@ -572,7 +572,7 @@ invalid json:\n".$content
 		return $this->data;
 	}
 
-	function __useOutdatedCache($ar){
+	protected function __useOutdatedCache($ar){
 		$this->_loggerDebug("outdated cache returned due to an error occurrence: $this->url");
 		return $this->__setCacheAndReturnData($ar);
 	}
@@ -659,7 +659,7 @@ invalid json:\n".$content
 		return $url.$connector.$this->_joinParams($params);
 	}
 
-	function _writeCache($url,$status_code,$status_message,$data,$raw_response,$errors){
+	protected function _writeCache($url,$status_code,$status_message,$data,$raw_response,$errors){
 		$value = array(
 			"url" => $url,
 			"status_code" => $status_code,
@@ -674,7 +674,7 @@ invalid json:\n".$content
 		$this->_loggerDebug("writing cache");
 	}
 
-	function _readCache($url,$max_age,&$ar){
+	protected function _readCache($url,$max_age,&$ar){
 		if($ar = $this->cache_storage->read($url)){
 			if(!isset($ar["version"]) || $ar["version"]!==self::VERSION){
 				$this->_loggerDebug("ApiDataFetcher VERSION mismatch in cache file: $url");
@@ -735,7 +735,7 @@ invalid json:\n".$content
 		return join("\n",$out);
 	}
 
-	function _formatSeconds($sec){
+	protected function _formatSeconds($sec){
 		return number_format($sec,3,".","")."s";
 	}
 
@@ -781,7 +781,7 @@ invalid json:\n".$content
 	 *	$this->_loggerLog("Some information")
 	 *
 	 */
-	function _loggerLog($message,$options = []){
+	protected function _loggerLog($message,$options = []){
 		if(!$this->logger){ return; }
 
 		$options += [
@@ -794,7 +794,7 @@ invalid json:\n".$content
 		$this->logger->$log_level($message);
 	}
 
-	function _hidePasswordInMessage($message){
+	protected function _hidePasswordInMessage($message){
 		if(preg_match('/@/',$this->base_url)){
 			$replace = preg_replace('/:\/\/([^:@]+):([^@:]+)@/','://\1:********@',$this->base_url);
 			$message = str_replace($this->base_url,$replace,$message);
@@ -808,7 +808,7 @@ invalid json:\n".$content
 	 *	$this->_loggerLog("Some debug information")
 	 *
 	 */
-	function _loggerDebug($message){
+	protected function _loggerDebug($message){
 		$this->_loggerLog($message,["log_level" => "debug"]);
 	}
 
@@ -817,7 +817,7 @@ invalid json:\n".$content
 	 *
 	 *	$this->_loggerFlush();
 	 */
-	function _loggerFlush(){
+	protected function _loggerFlush(){
 		if($this->logger){
 			$this->logger->flush();
 		}
