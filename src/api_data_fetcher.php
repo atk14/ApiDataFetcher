@@ -277,6 +277,10 @@ class ApiDataFetcher{
 	function postJson($action,$json,$options = array()){
 		if(!is_string($json)){
 			$json = json_encode($json);
+			if($json === false){
+				$class = get_class($this);
+				throw new \InvalidArgumentException("$class::postJson(): json_encode() failed: " . json_last_error_msg());
+			}
 		}
 		$options += array(
 			"mime_type" => "application/json",

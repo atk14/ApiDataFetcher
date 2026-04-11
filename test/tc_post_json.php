@@ -29,6 +29,21 @@ class TcPostJson extends TcBase {
 		$this->assertEquals("http://www.atk14.net/api/en/http_requests/detail/?p3=v3&p4=v4&format=json",$data["url"]);
 	}
 
+	function test_json_encoding_failed(){
+		$adf = new ApiDataFetcher("http://www.atk14.net/api/");
+
+		$exception_thrown = false;
+		try {
+		$adf->postJson("http_requests/detail",array("key" => "\xff")); // invalid UTF-8 sequence
+		}catch(Exception $e){
+			$exception_thrown = true;
+		}
+		$this->assertTrue($exception_thrown);
+		$this->assertEquals("InvalidArgumentException",get_class($e));
+		$this->assertStringContains("ApiDataFetcher::postJson(): json_encode() failed",$e->getMessage());
+		
+	}
+
 	function _headersToAssociativeArray($headers){
 		$out = array();
 		foreach($headers as $header){
