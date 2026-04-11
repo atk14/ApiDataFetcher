@@ -6,6 +6,8 @@ class TcApiDataFetcher extends TcBase {
 			"logger" => new Logger()
 		));
 
+		$this->assertEquals(0,$adf->getQueriesCount());
+
 		$login = "testing".uniqid();
 
 		// ### login_availabilities
@@ -23,6 +25,8 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertTrue(is_float($duration));
 		$this->assertTrue($duration>0.0);
 
+		$this->assertEquals(1,$adf->getQueriesCount());
+
 		// ### users/create_new
 
 		$data = $adf->post("users/create_new",array(
@@ -37,6 +41,8 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals("POST",$adf->getMethod());
 		$this->assertEquals("https://www.atk14.net/api/en/users/create_new/",$adf->getUrl());
 
+		$this->assertEquals(2,$adf->getQueriesCount());
+
 		// ### login_availabilities
 
 		$data = $adf->get("login_availabilities/detail",array(
@@ -45,6 +51,8 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals(200,$adf->getStatusCode());
 		$this->assertEquals(array("status" => "taken"),$data);
 		$this->assertEquals('{"status":"taken"}',$adf->getRawResponse());
+
+		$this->assertEquals(3,$adf->getQueriesCount());
 
 		// ### logins/create_new
 		/*

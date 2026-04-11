@@ -13,11 +13,11 @@ class ApiDataFetcherPanel implements Tracy\IBarPanel{
 	}
 
 	function getTab(){
-		$queries_executed = $this->api_data_fetcher->getQueriesExecuted();
-		if(!$queries_executed){
+		$queries_count = $this->api_data_fetcher->getQueriesCount();
+		if(!$queries_count){
 			return $this->title;
 		}
-		return "<strong>$this->title</strong> $queries_executed";
+		return "<strong>$this->title</strong> $queries_count";
 	}
 
 	function getPanel(){

@@ -692,8 +692,14 @@ invalid json:\n".$content
 		$this->_loggerDebug("doesn't exist in cache: $url");
 	}
 
-	function getQueriesExecuted(){
+	function getQueriesCount(){
 		return sizeof(ApiDataFetcher::$QueriesExecuted);
+	}
+
+	function getQueriesExecuted(){
+		$class = get_class($this);
+		trigger_error("calling $class::getQueriesExecuted() is deprecated, use $class::getQueriesCount()",E_USER_DEPRECATED);
+		return $this->getQueriesCount();
 	}
 
 	function getStatistics(){
