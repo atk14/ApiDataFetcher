@@ -457,7 +457,7 @@ invalid json:\n".$content
 		}else{
 			$this->_loggerDebug(join("\n",$msg));
 			if($options["cache"]>0){
-				$this->_writeCache($url,$this->status_code,$this->status_message,$this->data,$this->raw_response,$this->errors);
+				$this->_writeCache($url,$options["cache"],$this->status_code,$this->status_message,$this->data,$this->raw_response,$this->errors);
 			}
 		}
 
@@ -659,7 +659,7 @@ invalid json:\n".$content
 		return $url.$connector.$this->_joinParams($params);
 	}
 
-	protected function _writeCache($url,$status_code,$status_message,$data,$raw_response,$errors){
+	protected function _writeCache($url,$max_age,$status_code,$status_message,$data,$raw_response,$errors){
 		$value = array(
 			"url" => $url,
 			"status_code" => $status_code,
@@ -670,7 +670,7 @@ invalid json:\n".$content
 			"created" => time(),
 			"version" => self::VERSION,
 		);
-		$this->cache_storage->write($url,$value);
+		$this->cache_storage->write($url,$value,$max_age);
 		$this->_loggerDebug("writing cache");
 	}
 
@@ -692,6 +692,11 @@ invalid json:\n".$content
 		$this->_loggerDebug("doesn't exist in cache: $url");
 	}
 
+	/**
+	 * Returns count of executed queries
+	 *
+	 * @return int
+	 */
 	function getQueriesCount(){
 		return sizeof(ApiDataFetcher::$QueriesExecuted);
 	}
