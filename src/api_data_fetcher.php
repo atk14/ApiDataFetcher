@@ -733,8 +733,8 @@ invalid json:\n".$content
 				$out[] = sprintf('%s %s',$this->_h($el["method"]),$this->_h($el["url"]));
 			}
 			$out[] = sprintf("response: HTTP %s %s",$this->_h($el["status_code"]),$this->_h($el["status_message"]));
-			$out[] = $this->_h($this->_dumpVar("params",$this->_deobjectivizeParams($el["params"])));
-			$out[] = $this->_h($this->_dumpVar("result",$el["data"]));
+			$out[] = $this->_dumpVar("params",$this->_deobjectivizeParams($el["params"]));
+			$out[] = $this->_dumpVar("result",$el["data"]);
 			$out[] = "";
 		}
 		$out[] = "</pre>";
