@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.13.1] - 2026-04-12
+---------------------
+
+* 1fbebc0 - The `ApiDataFetcher::_doRequest()` method is public again
+
 [1.13] - 2026-04-12
 -------------------
 
