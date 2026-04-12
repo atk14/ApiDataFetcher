@@ -3,6 +3,15 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.13] - 2026-04-12
+-------------------
+
+* 1ef138f - Passing the $max_age parameter into CacheFileStorage::write()
+* cd962dd - Private methods are no longer public
+* 60f2b12 - Added method ApiDataFetcher::getQueriesCount(); the legacy method ApiDataFetcher::getQueriesExecuted() is its alias
+* e3affc4 - The unnecessary dependency on the atk14/http package has been removed
+* 6a9c2dd - If an error occurs when calling the `json_encode` function, an exception will be thrown
+
 [1.12.4] - 2026-02-06
 ---------------------
 
