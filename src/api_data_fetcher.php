@@ -696,12 +696,22 @@ invalid json:\n".$content
 		return sizeof(ApiDataFetcher::$QueriesExecuted);
 	}
 
+	/**
+	 * Deprecated alias for ApiDataFetcher::getQueriesCount()
+	 *
+	 * @deprecated
+	 */
 	function getQueriesExecuted(){
 		$class = get_class($this);
-		trigger_error("calling $class::getQueriesExecuted() is deprecated, use $class::getQueriesCount()",E_USER_DEPRECATED);
+		// trigger_error("calling $class::getQueriesExecuted() is deprecated, use $class::getQueriesCount()",E_USER_DEPRECATED);
 		return $this->getQueriesCount();
 	}
 
+	/**
+	 * Returns staistical data in HTML format
+	 *
+	 * @return string
+	 */
 	function getStatistics(){
 		$stats = ApiDataFetcher::$QueriesExecuted;
 		$total_time = 0.0;
@@ -718,16 +728,13 @@ invalid json:\n".$content
 			$out[] = sprintf('action: <a href="%s">%s</a>',$this->_h($el["action_url"]),$this->_h($el["action"]));
 			$out[] = "duration: ".$this->_formatSeconds($el["duration"]);
 			if($el["method"]=="GET"){
-				$out[] = "$el[method] <a href='$el[url]'>$el[url]</a>";
+				$out[] = sprintf('%s <a href="%s">%s</a>',$this->_h($el["method"]),$this->_h($el["url"]),$this->_h($el["url"]));
 			}else{
-				$out[] = "$el[method] $el[url]";
+				$out[] = sprintf('%s %s',$this->_h($el["method"]),$this->_h($el["url"]));
 			}
-			$out[] = "response: HTTP $el[status_code] $el[status_message]";
-			foreach($el["params"] as &$_p){
-				$_p = is_object($_p) ? "$_p" : $_p; // prevod zejmena $api_session na string
-			}
-			$out[] = $this->_dumpVar("params",$el["params"]);
-			$out[] = $this->_dumpVar("result",$el["data"]);
+			$out[] = sprintf("response: HTTP %s %s",$this->_h($el["status_code"]),$this->_h($el["status_message"]));
+			$out[] = $this->_h($this->_dumpVar("params",$this->_deobjectivizeParams($el["params"])));
+			$out[] = $this->_h($this->_dumpVar("result",$el["data"]));
 			$out[] = "";
 		}
 		$out[] = "</pre>";
