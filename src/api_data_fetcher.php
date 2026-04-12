@@ -297,9 +297,15 @@ class ApiDataFetcher{
 	}
 
 	/**
+	 * Makes an HTTP request
+	 *
+	 * In fact, it is not a private method, because it can be mocked in tests.
+	 *
 	 *	$this->_doRequest("products/detail",array("catalog_id" => "1234/3345566"));
+	 *
+	 * @access private
 	 */
-	protected function _doRequest($action,$params,$options){
+	function _doRequest($action,$params,$options){
 		$params += array(
 			"lang" => $this->lang,
 		);
