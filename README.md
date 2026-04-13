@@ -1,7 +1,8 @@
 ApiDataFetcher
 ==============
 
-[![Build Status](https://travis-ci.com/atk14/ApiDataFetcher.svg?branch=master)](https://travis-ci.com/atk14/ApiDataFetcher)
+[![Build Status](https://app.travis-ci.com/atk14/ApiDataFetcher.svg?token=Kc7UxgK5oqFG8sZAhCzg&branch=master)](https://app.travis-ci.com/atk14/ApiDataFetcher)
+
 
 PHP client library for communication with ATK14 RESTful APIs and other JSON APIs.
 
