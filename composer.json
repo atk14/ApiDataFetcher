@@ -1,7 +1,7 @@
 {
         "name": "atk14/api-data-fetcher",
         "type": "library",
-        "description": "A client for communication with ATK14 restful API",
+        "description": "PHP client library for communication with ATK14 RESTful APIs and other JSON APIs",
         "keywords": ["atk14", "api", "restful", "client"],
         "homepage": "https://github.com/atk14/ApiDataFetcher",
         "license": ["MIT"],
