@@ -49,7 +49,8 @@ class ApiDataFetcher{
 	protected $method;
 	protected $duration;
 
-	protected $socket_timeout;
+	protected $socket_timeout = 5.0;
+	protected $read_timeout = 30.0;
 
 	protected static $QueriesExecuted = array();
 
@@ -101,7 +102,8 @@ class ApiDataFetcher{
 			"proxy" => "", // e.g. "tcp://192.168.1.1:8118"
 			"communicate_via_command" => null, // path to a command
 
-			"socket_timeout" => 5.0,
+			"socket_timeout" => $this->socket_timeout,
+			"read_timeout" => $this->read_timeout,
 
 			"get_content_callback" => function($url_fetcher){ return $url_fetcher->getContent(); },
 
@@ -134,7 +136,8 @@ class ApiDataFetcher{
 		$this->automatically_add_trailing_slash = $options["automatically_add_trailing_slash"];
 		$this->proxy = $options["proxy"];
 		$this->communicate_via_command = $options["communicate_via_command"];
-		$this->socket_timeout = $options["socket_timeout"];
+		$this->socket_timeout = (float)$options["socket_timeout"];
+		$this->read_timeout = (float)$options["read_timeout"];
 		$this->get_content_callback = $options["get_content_callback"];
 		$this->verify_peer = $options["verify_peer"];
 		$this->verify_peer_name = $options["verify_peer_name"];
@@ -294,6 +297,17 @@ class ApiDataFetcher{
 		$current_socket_timeout = $this->socket_timeout;
 		$this->socket_timeout = $timeout;
 		return $current_socket_timeout;
+	}
+
+	/**
+	 * Set timeout for reading from HTTP socket
+	 *
+	 * @param float $timeout timeout in seconds
+	 */
+	function setReadTimeout($timeout){
+		$current_read_timeout = $this->read_timeout;
+		$this->read_timeout = $timeout;
+		return $current_read_timeout;
 	}
 
 	/**
@@ -526,10 +540,10 @@ invalid json:\n".$content
 				"proxy" => $this->proxy,
 				"verify_peer" => $this->verify_peer,
 				"verify_peer_name" => $this->verify_peer_name,
+				"socket_timeout" => $this->socket_timeout,
+				"read_timeout" => $this->read_timeout,
 			));
 		}
-
-		$u->setSocketTimeout($this->socket_timeout);
 
 		if(!is_null($options["raw_post_data"])){
 			$u->post($options["raw_post_data"],array(
