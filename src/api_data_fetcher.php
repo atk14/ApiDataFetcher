@@ -50,7 +50,7 @@ class ApiDataFetcher{
 	protected $duration;
 
 	protected $socket_timeout = 5.0;
-	protected $read_timeout = 30.0;
+	protected $read_timeout = 60.0;
 
 	protected static $QueriesExecuted = array();
 
