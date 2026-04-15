@@ -13,6 +13,7 @@ class TcReadTimeout extends TcBase {
 			$exception_thrown = true;
 		}
 		$this->assertEquals(true,$exception_thrown);
+		$this->assertStringContains("read timeout",$e->getMessage());
 
 		$exception_thrown = false;
 		try {
