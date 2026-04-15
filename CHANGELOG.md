@@ -3,7 +3,12 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
-[1.13.2] - 2026-04-12
+[1.13.3] - 2026-04-15
+---------------------
+
+* b6f31bb - Default read timeout is 60.0s
+
+[1.13.2] - 2026-04-15
 ---------------------
 
 * 0855fd3 - Added the read_timeout option, def. value is 30.0
