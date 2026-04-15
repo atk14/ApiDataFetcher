@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.13.2] - 2026-04-12
+---------------------
+
+* 0855fd3 - Added the read_timeout option, def. value is 30.0
+
 [1.13.1] - 2026-04-12
 ---------------------
 
