@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.13.4] - 2026-06-26
+---------------------
+
+* 5ae4c1d - ApiDataFetcher logs an error message with log_level=error
+
 [1.13.3] - 2026-04-15
 ---------------------
 
