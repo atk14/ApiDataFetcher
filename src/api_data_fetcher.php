@@ -463,7 +463,7 @@ invalid json:\n".$content
 
 			$msg[] = "error: ".$this->_serializeErrorMessages($this->errors);
 
-			$this->_loggerLog(join("\n",$msg));
+			$this->_loggerLog(join("\n",$msg),["log_level" => "error"]);
 			$this->_loggerFlush();
 			if($options["return_cached_content_on_error"] && $cached_ar){
 				return $this->__useOutdatedCache($cached_ar);
