@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.13.5] - 2026-08-03
+---------------------
+
+* 32c1e7b - CacheFileStorage moved into package atk14/cache-file-storage
+
 [1.13.4] - 2026-06-26
 ---------------------
 
