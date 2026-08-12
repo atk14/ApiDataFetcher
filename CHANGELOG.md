@@ -3,6 +3,11 @@ Change Log
 
 All notable changes to this project will be documented in this file.
 
+[1.13.6] - 2026-08-12
+---------------------
+
+* e1bfdc1 - Added option ip_address
+
 [1.13.5] - 2026-08-03
 ---------------------
 
