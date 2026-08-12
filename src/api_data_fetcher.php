@@ -62,6 +62,8 @@ class ApiDataFetcher{
 
 	protected $verify_peer_name = true;
 
+	protected $ip_address = "";
+
 	/**
 	 *
 	 * <code>
@@ -109,6 +111,8 @@ class ApiDataFetcher{
 
 			"verify_peer" => true,
 			"verify_peer_name" => true,
+
+			"ip_address" => "",
 		);
 
 		if(is_null($options["logger"])){
@@ -141,6 +145,7 @@ class ApiDataFetcher{
 		$this->get_content_callback = $options["get_content_callback"];
 		$this->verify_peer = $options["verify_peer"];
 		$this->verify_peer_name = $options["verify_peer_name"];
+		$this->ip_address = $options["ip_address"];
 	}
 
 	/**
@@ -542,6 +547,7 @@ invalid json:\n".$content
 				"verify_peer_name" => $this->verify_peer_name,
 				"socket_timeout" => $this->socket_timeout,
 				"read_timeout" => $this->read_timeout,
+				"ip_address" => $this->ip_address,
 			));
 		}
 
