@@ -337,6 +337,44 @@ class TcApiDataFetcher extends TcBase {
 		$this->assertEquals('{"status":"taken"}',$adf->getRawResponse());
 	}
 
+	function test_ip_address(){
+		$login = "testing".uniqid();
+
+		$ip = gethostbyname("www.atk14.net");
+		$this->assertNotEquals("www.atk14.net",$ip); // sanity check: resolution actually happened
+
+		// connecting via an explicit IP address still works over https;
+		// Host header / SNI / certificate verification stays tied to the original hostname
+		$adf = new ApiDataFetcher("https://www.atk14.net/api/",array(
+			"ip_address" => $ip,
+		));
+		$data = $adf->get("login_availabilities/detail",array(
+			"login" => $login,
+		));
+		$this->assertEquals(200,$adf->getStatusCode());
+		$this->assertEquals(array("status" => "available"),$data);
+
+		// a bogus IP address proves the option actually redirects the connection, rather than being ignored
+		$adf = new ApiDataFetcher("https://www.atk14.net/api/",array(
+			"ip_address" => "127.0.0.1",
+		));
+
+		set_error_handler(function() { /* ignore errors */ });
+
+		$exception = null;
+		try {
+			$adf->get("login_availabilities/detail",array(
+				"login" => $login,
+			));
+		}catch(Exception $exception){
+		}
+
+		restore_error_handler();
+
+		$this->assertTrue(!is_null($exception));
+		$this->assertEquals("ApiDataFetcher\NetworkException",get_class($exception));
+	}
+
 	function test_no_content(){
 		$adf = new ApiDataFetcher("https://www.atk14.net/api/");
 
