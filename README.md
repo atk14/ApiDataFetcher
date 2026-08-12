@@ -17,6 +17,7 @@ PHP client library for communication with ATK14 RESTful APIs and other JSON APIs
 - [Additional headers](#additional-headers)
 - [Caching](#caching)
 - [Proxy](#proxy)
+- [IP address](#ip-address)
 - [SSL verification](#ssl-verification)
 - [Timeout](#timeout)
 - [Constructor options reference](#constructor-options-reference)
@@ -237,6 +238,16 @@ Proxy
     ]);
 
 
+IP address
+----------
+
+Connect to a specific IP address instead of resolving it from the URL's hostname. The `Host` header and SSL certificate verification still use the original hostname.
+
+    $adf = new ApiDataFetcher("https://api.example.com/api/", [
+        "ip_address" => "203.0.113.10",
+    ]);
+
+
 SSL verification
 ----------------
 
@@ -279,6 +290,7 @@ Constructor options reference
 | `cache_storage` | object | `new CacheFileStorage()` | Cache storage instance |
 | `socket_timeout` | float | `5.0` | Connection timeout in seconds |
 | `proxy` | string | `""` | Proxy URL, e.g. `"tcp://proxy:8118"` |
+| `ip_address` | string | `""` | IP address to connect to instead of resolving it from the URL's hostname; `Host` header and SSL certificate verification still use the original hostname |
 | `verify_peer` | bool | `true` | Verify the SSL certificate |
 | `verify_peer_name` | bool | `true` | Verify the SSL certificate hostname |
 | `automatically_add_leading_slash` | bool | `true` | Ensure base URL ends with `/` |
